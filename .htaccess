@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  #
+  # stuff to let through (ignore)
+  RewriteCond %{REQUEST_URI} "/chat/" [OR]
+  RewriteCond %{REQUEST_URI} "/chat/"
+  RewriteRule (.*) $1 [L]
+  #</IfModule>
+</IfModule>
+Options +SymLinksIfOwnerMatch
+RewriteEngine On
+
+#RewriteCond %{HTTP_HOST} ^coachingzon\.com [NC]
+#RewriteCond %{SERVER_PORT} 80
+#RewriteRule ^(.*)$ https://coachingzon.com/portal/$1 [R,L]
+RewriteRule ^ server.php [L]

@@ -1,0 +1,16 @@
+<?php
+namespace App\Http\Middleware;
+use Closure;
+use Illuminate\Http\Request;
+use Session;
+class Adminsession
+{
+    public function handle(Request $request, Closure $next)
+    {
+	    if (!$request->session()->exists('CS_ADMIN'))
+        {
+            return redirect()->route('adminLogin');// here you should redirect to login 
+        }
+        return $next($request);
+    }
+}
