@@ -5,7 +5,7 @@ if (!defined('DS')) {
 define('ROOT', dirname(__DIR__));
 define('SITE_ABS_PATH','coachingzon/');
 define('SITE_PATH',$_SERVER['DOCUMENT_ROOT'].'/'.SITE_ABS_PATH);
-define('SITE_URL','http://'.(isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:'').'/'.SITE_ABS_PATH);
+define('SITE_URL','https://'.(isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:'').'/'.SITE_ABS_PATH);
  define('ADMIN_URL',SITE_URL.'csadmin/');
 //echo SITE_PATH;die;
 define('ADMIN_ASSETS_URL',SITE_URL.'public/admin-assets/');
