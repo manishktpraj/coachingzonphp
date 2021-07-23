@@ -98,4 +98,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH /var/www/vhosts/coachingzon.com/httpdocs/portal/resources/views/welcome.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/welcome.blade.php ENDPATH**/ ?>

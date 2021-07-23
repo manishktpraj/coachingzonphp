@@ -158,6 +158,11 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         Route::any('/getcityajax', 'SettingsController@getcityajax')->name('getcityajax');
         Route::any('/storeProccess', 'SettingsController@storeProccess')->name('storeProccess');
     /*******************/
+
+    Route::group(['prefix'=>'intitute'], function(){
+        Route::any('/', 'InstituteController@index')->name('manageinstitute');
+        Route::any('/category', 'InstituteCategoryController@index')->name('manageinstitutecategory');
+    });
     /*******************/
     });
 });

@@ -1,5 +1,5 @@
-@extends('Csadmin.Layout.app')
-@section ('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="content-body">
 <div class="container pd-x-0">
 <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
@@ -14,7 +14,7 @@
 </div>
 <div class="d-none d-md-block">
 <!--<a href="#" class="btn btn-sm pd-x-15 btn-white btn-uppercase"><i data-feather="file" class="wd-10 mg-r-5"></i>Export</a>-->
-<a href="{{route('add-new-package')}}" class="btn btn-sm pd-x-15 btn-primary btn-uppercase  mg-l-5"><i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Package</a>
+<a href="<?php echo e(route('add-new-package')); ?>" class="btn btn-sm pd-x-15 btn-primary btn-uppercase  mg-l-5"><i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Package</a>
 </div>
 </div>
 <div class="row row-xs">
@@ -27,7 +27,7 @@
 </div>
 </div>
 <div class="card-body">
-@include('Csadmin.bulkaction', ['status' => 'FILTER_PACKAGE'])
+<?php echo $__env->make('Csadmin.bulkaction', ['status' => 'FILTER_PACKAGE'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </div>
 <div class="table-responsive">
 <table class="table mg-b-0">
@@ -71,17 +71,17 @@ foreach($resPackageData as $package){?>
 <td style="text-align:center;">0</td>
 
 <td> <?php if($package->package_status==1){?>
-    <a href="{{route('packageStatus',$package->package_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-success">Active</span></a>
+    <a href="<?php echo e(route('packageStatus',$package->package_id)); ?>" onclick="return confirm('Are you sure?')"><span class="badge badge-success">Active</span></a>
     <?php }else{?>
-    <a href="{{route('packageStatus',$package->package_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-danger">Inactive</span></a>
+    <a href="<?php echo e(route('packageStatus',$package->package_id)); ?>" onclick="return confirm('Are you sure?')"><span class="badge badge-danger">Inactive</span></a>
     <?php }?></td>
 <td><?php echo date("d M Y",strtotime($package->created_at));?></td>
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
-<a href="{{route('packageManage',$package->package_id )}}" class="btn btn-info btn-icon mg-r-5" title="Manage" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
-<a href="{{route('add-new-package',$package->package_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
-<a href="{{route('packageDelete',$package->package_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
+<a href="<?php echo e(route('packageManage',$package->package_id )); ?>" class="btn btn-info btn-icon mg-r-5" title="Manage" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
+<a href="<?php echo e(route('add-new-package',$package->package_id )); ?>" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
+<a href="<?php echo e(route('packageDelete',$package->package_id )); ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>
 </div>
 </td>
@@ -94,11 +94,12 @@ foreach($resPackageData as $package){?>
 </div>
 <div class="card-footer d-flex align-items-center justify-content-between" style="align-items: center;">
 <span class="text-muted"><?php echo 'Showing '.$resPackageData->firstItem().' to '.$resPackageData->lastItem().' of '.$resPackageData->total().' entries';?></span>
-<ul class="pagination pagination-filled mg-b-0">{{ $resPackageData->links() }}</ul>
+<ul class="pagination pagination-filled mg-b-0"><?php echo e($resPackageData->links()); ?></ul>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/Packages/index.blade.php ENDPATH**/ ?>

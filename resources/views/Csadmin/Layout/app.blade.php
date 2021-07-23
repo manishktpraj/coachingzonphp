@@ -1,4 +1,4 @@
-<?php //print_r($resuserData);
+<?php 
 
 ?>
 
@@ -54,6 +54,17 @@
 <ul class="nav nav-aside">
     
 <li class="nav-item <?php echo (isset($title) && $title == 'Dashboard')?'active':''; ?>"><a href="https://neonclasses.co.in/portal/csadmin/dashboard" class="nav-link"><i data-feather="airplay"></i> <span>Dashboard</span></a></li>
+
+
+<li class="nav-item with-sub <?php echo (isset($title) && $title == 'Question' || $title == 'Add New Question' || $title == 'Question Subjects')?'active show':''; ?>">
+<a href="" class="nav-link"><i data-feather="help-circle"></i> <span>Institute</span></a>
+<ul>
+<li class="<?php echo (isset($title) && $title == 'Manage Institute')?'active':''; ?>"><a href="{{route('manageinstitute')}}">Manage Institute</a></li>
+<li class="<?php echo (isset($title) && $title == 'Add New Institute')?'active':''; ?>"><a href="{{route('add-new-question')}}">Add New</a></li>
+<li class="<?php echo (isset($title) && $title == 'Manage Institute Category')?'active':''; ?>"><a href="{{route('manageinstitutecategory')}}">Category</a></li>
+</ul>
+</li>
+
 
 <li class="nav-item with-sub <?php echo (isset($title) && $title == 'Question' || $title == 'Add New Question' || $title == 'Question Subjects')?'active show':''; ?>">
 <a href="" class="nav-link"><i data-feather="help-circle"></i> <span>Question Bank</span></a>

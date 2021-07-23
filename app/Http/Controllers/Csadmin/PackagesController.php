@@ -20,8 +20,11 @@ use Validator;
 
 class PackagesController extends Controller
 {
+
   public function index(Request $request)
   {
+    $user=Session::get("CS_ADMIN");
+   //print_r($user);
       
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
@@ -68,12 +71,19 @@ class PackagesController extends Controller
    
         if(session()->has('FILTER_PACKAGE')){
         $strFilterKeyword = Session::get('FILTER_PACKAGE');
-        $resPackageData = CsPackage::where('package_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+            if($user->role_type==0){
+                $resPackageData = CsPackage::where('package_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+            }else{
+
+        $resPackageData = CsPackage::where('package_name', 'LIKE', "%{$strFilterKeyword}%")->where('pacakge_ins_id','=',$user->user_id)->paginate(20);
         //print_r($resVideoData);
-        }else{
-        $resPackageData = CsPackage::paginate(20);
-        }    
-     
+        }}else{
+            if($user->role_type==0){
+                $resPackageData = CsPackage::paginate(20);
+            }else{
+        $resPackageData = CsPackage::where('pacakge_ins_id','=',$user->user_id)->paginate(20);
+  }}    
+     //print_r($resPackageData);
     $resCategoryData = CsPcategory::get(); 
     $title='Packages';
     return view('Csadmin.Packages.index',compact('title','resPackageData','resCategoryData'));
@@ -81,9 +91,16 @@ class PackagesController extends Controller
   
   public function addNewPackage($intPackageId=0)
   {
+    $user=Session::get("CS_ADMIN");
+
        $resPackageData = array();
         if($intPackageId>0){
+            if($user->role_type==0){
             $resPackageData = CsPackage::where('package_id','=',$intPackageId)->first();
+            }else{
+            $resPackageData = CsPackage::where('package_id','=',$intPackageId)->where('pacakge_ins_id','=',$user->user_id)->first();
+
+            }
         }
         $strCategory =array();
         if(isset($resPackageData->package_pc_id))
@@ -127,6 +144,9 @@ class PackagesController extends Controller
     }
     function packageProccess(Request $request)
     {
+        $user=Session::get("CS_ADMIN");
+        
+        
         $aryPostData = $request->all();
         //print_r($aryPostData);die;
         if(isset($aryPostData['package_id']) && $aryPostData['package_id']>0)
@@ -146,6 +166,7 @@ class PackagesController extends Controller
         $postobj->package_selling_price = $aryPostData['package_selling_price'];
         $postobj->package_discount = $aryPostData['package_discount'];
         $postobj->package_validity = $aryPostData['package_validity'];
+        $postobj->pacakge_ins_id = $user['user_id'];
 
         
         if(isset($aryPostData['package_pc_id_']) && count($aryPostData['package_pc_id_'])>0)

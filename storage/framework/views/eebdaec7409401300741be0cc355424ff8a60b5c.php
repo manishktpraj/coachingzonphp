@@ -42,4 +42,4 @@
 </div>
 
 
-</div><?php /**PATH /var/www/vhosts/coachingzon.com/httpdocs/portal/resources/views/Csadmin/bulkaction.blade.php ENDPATH**/ ?>
+</div><?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/bulkaction.blade.php ENDPATH**/ ?>

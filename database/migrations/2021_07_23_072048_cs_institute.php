@@ -15,7 +15,7 @@ class CsInstitute extends Migration
     {
         //
         Schema::create('cs_institute', function (Blueprint $table) {
-            $table->id();
+            $table->id("ins_id");
             $table->string('ins_uniqueId');
             $table->string('ins_name');
             $table->string('ins_phone');
@@ -28,9 +28,16 @@ class CsInstitute extends Migration
             $table->text('ins_logo');
             $table->text('ins_cover_image');
             $table->text('ins_slug');
+            $table->string('ins_state');
+            $table->string('ins_city');
+            $table->string('ins_postcode');
+
             $table->integer('ins_cat_id');
             $table->text('ins_cat_name');
             $table->timestamps();
+           /// $table->foreign('ins_cat_id')->references('icat_id')->on('cs_institute_category');
+
+
         });
     }
 
@@ -42,5 +49,7 @@ class CsInstitute extends Migration
     public function down()
     {
         //
+        Schema::dropIfExists('cs_institute');
+
     }
 }

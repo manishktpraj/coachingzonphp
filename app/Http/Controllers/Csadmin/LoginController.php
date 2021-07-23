@@ -4,14 +4,14 @@ use App\Http\Controllers\Controller;
 use DB;
 use Hash;
 use Session;
-use App\Http\Model\CsStaff;
+use App\Http\Model\CsadminView;
 use App\Http\Model\Permission;
 
 class LoginController extends Controller
 {
   public function AdminLogin(Request $request)
   {
-      //echo Hash::make('neonclasses@2444');
+  ///echo Hash::make('123456');
      if(Session::has('CS_ADMIN')){
         return redirect()->route('dashboard');    
     }
@@ -22,8 +22,9 @@ class LoginController extends Controller
   	    $email = $request->user_email;
           $password =$request->user_password;
      
-        $adminLoginCheck = CsStaff::where('staff_email','=',$email)->first();
+        $adminLoginCheck = CsadminView::where('staff_email','=',$email)->first();
         if($adminLoginCheck){
+       ////   print_r($adminLoginCheck->staff_password);
           if (Hash::check($password, $adminLoginCheck->staff_password)) {
             Session::put('CS_ADMIN', $adminLoginCheck);
             Session::save();

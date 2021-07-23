@@ -82,4 +82,4 @@ lightMode();
 </script>
 </body>
 </html>
-<?php /**PATH /var/www/vhosts/coachingzon.com/httpdocs/portal/resources/views/Csadmin/Auth/login.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/Auth/login.blade.php ENDPATH**/ ?>

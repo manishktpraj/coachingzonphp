@@ -491,4 +491,4 @@
 </div><!-- container -->
 </div>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/vhosts/coachingzon.com/httpdocs/portal/resources/views/Csadmin/dashboard.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/dashboard.blade.php ENDPATH**/ ?>

@@ -1,5 +1,5 @@
-@extends('Csadmin.Layout.app')
-@section ('content')
+
+<?php $__env->startSection('content'); ?>
 <?php //print_r($strCategory); echo "shikha";?>
 
 <div class="content-body">
@@ -15,8 +15,8 @@
 <h4 class="mg-b-0 tx-spacing--1">Add New Package</h4>
 </div>
 </div>
-<form method="post" action="{{route('packageProccess')}}" enctype="multipart/form-data">
-@csrf
+<form method="post" action="<?php echo e(route('packageProccess')); ?>" enctype="multipart/form-data">
+<?php echo csrf_field(); ?>
 <input type="hidden" name="package_id" value="<?php echo isset($resPackageData->package_id)?$resPackageData->package_id:'0'?>">
 <div class="row row-xs">
 <div class="col-lg-8">
@@ -202,4 +202,5 @@ function setnormalnetprice(obj)
 </script>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/Packages/addNewPackage.blade.php ENDPATH**/ ?>

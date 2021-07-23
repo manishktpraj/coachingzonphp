@@ -1,16 +1,16 @@
-
-<?php $__env->startSection('content'); ?>
+@extends('Csadmin.Layout.app')
+@section ('content')
 <div class="content-body">
 <div class="container pd-x-0">
 <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
 <div>
 <nav aria-label="breadcrumb">
 <ol class="breadcrumb breadcrumb-style1 mg-b-10">
-<li class="breadcrumb-item"><a href="#">Test/Exams</a></li>
-<li class="breadcrumb-item active" aria-current="page">Test/Exams Categories</li>
+<li class="breadcrumb-item"><a href="#">Live Classes & Videos</a></li>
+<li class="breadcrumb-item active" aria-current="page">Categories</li>
 </ol>
 </nav>
-<h4 class="mg-b-0 tx-spacing--1">Manage Test/Exams Categories</h4>
+<h4 class="mg-b-0 tx-spacing--1">Manage Video Categories</h4>
 </div>
 <div class="d-none d-md-block"></div>
 </div>
@@ -18,32 +18,39 @@
 <div class="col-lg-4">
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
-<h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Add New Test/Exams Category</h6>
+<h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Add New Video Category</h6>
 </div>
-<form method="post" action="<?php echo e(route('testCategoryProccess')); ?>" enctype="multipart/form-data">
-<?php echo csrf_field(); ?>
-<input type="hidden" name="tc_id" value="<?php echo isset($rowCategoryData->tc_id)?$rowCategoryData->tc_id:'0'?>">
+<form method="post" action="{{route('videoCategoryProccess')}}" enctype="multipart/form-data">
+@csrf
+<input type="hidden" name="vc_id" value="<?php echo isset($rowCategoryData->vc_id)?$rowCategoryData->vc_id:'0'?>">
 <div class="card-body">
 <div class="form-group">
 <label>Category Name / Title: <span style="color:red">*</span></label>
-<input type="text" class="form-control" name="tc_name" required="" value="<?php echo isset($rowCategoryData->tc_name)?$rowCategoryData->tc_name:''?>">
+<input type="text" class="form-control" name="vc_name" required="" value="<?php echo isset($rowCategoryData->vc_name)?$rowCategoryData->vc_name:''?>">
 <span class="tx-color-03" style="font-size: 11px;">This name is appears on your site</span>
 </div>
+<?php //print_r($resCategoryData);
+// foreach($resCategoryData as $value){
+// echo $value->vc_name;
+//  if($value->vc_parent==$value->vc_id){
+//   echo $value->vc_name;
+//  }  
+    
+    
+// }
+
+//echo "shikha";
+
+?>
+
 <div class="form-group">
 <label>Parent Category:</label>
-<select class="custom-select" name="tc_parent">
+<select class="custom-select" name="vc_parent">
 <option value="0">Select Parent Category</option>
 <?php echo $strEntryHtml;?>
-
-
-
-
-
-
-
-
-
-}?>
+<!--<?php foreach($resCategoryData as $value){?>-->
+<!--<option <?php echo (isset($rowCategoryData->vc_parent) && $rowCategoryData->vc_parent==$value->vc_id)?'selected="selected"':''?> value="<?php echo $value->vc_id?>"><?php echo $value->vc_name;?></option>-->
+<!--<?php }?>-->
 </select>
 
 
@@ -52,19 +59,19 @@
 </div>
 <div class="form-group">
 <label>Order:</label>
-<input type="text" class="form-control" name="tc_order" value="<?php echo isset($rowCategoryData->tc_order)?$rowCategoryData->tc_order:''?>">
+<input type="text" class="form-control" name="vc_order" value="<?php echo isset($rowCategoryData->vc_order)?$rowCategoryData->vc_order:''?>">
 </div>
 <div class="form-group">
 <label>Image:</label>
 <div class="media align-items-center">
 <div class="avatar" style="height:60px; width:60px
-"><img id="tc_image" src="<?php echo (isset($rowCategoryData->tc_image) && $rowCategoryData->tc_image!="")?SITE_UPLOAD_URL.SITE_TEST_IMAGE.$rowCategoryData->tc_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt="" accept="image/*"></div>
+"><img id="vc_image" src="<?php echo (isset($rowCategoryData->vc_image) && $rowCategoryData->vc_image!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$rowCategoryData->vc_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <div class="custom-file">
-<input type="file" name="tc_image_" class="custom-file-input" onchange="showPreview('tc_image',this)" id="customFile" accept="image/*">
+<input type="file" name="vc_image_" class="custom-file-input" onchange="showPreview('vc_image',this)" id="customFile">
 <label class="custom-file-label" for="customFile">Choose file</label>
 </div>
-<span class="tx-11 tx-color-03">Accepted: gif, png, svg, jpg. Max file size 2Mb</span>
+<span class="tx-11 tx-color-03">Accepted: gif, png, jpg. Max file size 2Mb</span>
 </div>
 </div>
 </div>
@@ -78,11 +85,11 @@
 <div class="col-lg-8">
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
-<h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Test/Exams Categories Listings</h6>
+<h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Video Categories Listings</h6>
 </div>
 <div class="card-body">
-<form method="post" action="<?php echo e(route('bulkActionTestCat')); ?>" enctype="multipart/form-data">
-<?php echo csrf_field(); ?>
+<form method="post" action="{{route('bulkActionVideoCat')}}"  enctype="multipart/form-data">
+@csrf
 <div class="row">
 <div class="col-lg-6">
 <div class="d-sm-flex justify-content-start mg-b-0">
@@ -135,5 +142,4 @@
 </div>
 </div>
 </div>
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/vhosts/coachingzon.com/httpdocs/portal/resources/views/Csadmin/Tests/testCategory.blade.php ENDPATH**/ ?>
+@endsection
