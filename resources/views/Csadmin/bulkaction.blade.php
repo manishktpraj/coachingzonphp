@@ -26,7 +26,7 @@
 @csrf
 <div class="d-sm-flex justify-content-end mg-b-0">
 <div class="form-group mg-b-0">
-<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="{{ Session::get('$status') }}">
+<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="{{ Session::get($status) }}">
 </div>
 <div class="mg-sm-l-10">
     <button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Model\CsInstitute;
 use App\Http\Model\CsInstituteCategory;
+use Session;
 
 class InstituteController extends Controller
 {
@@ -16,13 +17,12 @@ class InstituteController extends Controller
        if($request->get('reset')==1)
        {
        Session::forget('FILTER_INSTITUTE');
-       return redirect()->route('manageintitute');   
+       return redirect()->route('manageinstitute');   
        }
     /***********************Reset Filter Session ************/
     
     /***********************Bulk Action ************/
       $aryPostData = $request->all();
-      print_r($aryPostData);
       if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
          $aryPostData =$_POST;
         $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -49,15 +49,19 @@ class InstituteController extends Controller
        
           /***********************Apply Condition ************/
   
-       if($request->get('FILTER_INSTITUTE')!='')
+       if($request->get('filter_keyword')!='')
        {
+ 
        Session::put('FILTER_INSTITUTE', $request->get('filter_keyword'));
        Session::save(); 
+
+
        }
           /***********************Apply Condition ************/
   
        if(session()->has('FILTER_INSTITUTE')){
        $strFilterKeyword = Session::get('FILTER_INSTITUTE');
+      // $strFilterKeyword;
        $resVideoData = CsInstitute::where('ins_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
        //print_r($resVideoData); die;
        }else{
@@ -71,5 +75,26 @@ class InstituteController extends Controller
    return view('Csadmin.Institute.index',compact('title','resVideoData','resCategoryData'));
  
  }
+ public function addNew($intVideoId=0)
+  {
+       $resInstituteData = array();
+        if($intVideoId>0){
+            $resInstituteData = CsInstitute::where('ins_id','=',$intVideoId)->first();
+        }
+      //   $strCategory =array();
+      //   if(isset($resVideoData->video_vc_id))
+      //   {
+      //       $strCategory = explode(',',$resVideoData->video_vc_id);
+      //   }
+      
+      // $resCategoryData = CsVcategory::get();
+      // $aryCategoryList = $this->buildTree($resCategoryData,0);
+      
+      // $strCategoryTreeStructure =$this->genrateHtml($aryCategoryList,0,$strCategory);
+
+    $title='Add New Institute';
+    return view('Csadmin.Institute.addNew' ,compact('title','resInstituteData'));
+   // return view('Csadmin.Institute.addNew' ,compact('title','resCategoryData','aryCategoryList','strCategoryTreeStructure','strCategory','resVideoData'));
+}
 
 }

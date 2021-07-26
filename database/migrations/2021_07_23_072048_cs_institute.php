@@ -32,9 +32,11 @@ class CsInstitute extends Migration
             $table->string('ins_city');
             $table->string('ins_postcode');
 
-            $table->integer('ins_cat_id');
+            $table->foreignId('ins_cat_id');
             $table->text('ins_cat_name');
             $table->timestamps();
+ 		
+			
            /// $table->foreign('ins_cat_id')->references('icat_id')->on('cs_institute_category');
 
 

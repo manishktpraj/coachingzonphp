@@ -1,5 +1,5 @@
-@extends('Csadmin.Layout.app')
-@section ('content')
+
+<?php $__env->startSection('content'); ?>
 <?php //print_r($strCategory); echo "shikha";?>
 
 <div class="content-body">
@@ -15,8 +15,8 @@
 <h4 class="mg-b-0 tx-spacing--1">Add New Institute</h4>
 </div>
 </div>
-<form method="post" action="{{route('videoProccess')}}" enctype="multipart/form-data">
-@csrf
+<form method="post" action="<?php echo e(route('videoProccess')); ?>" enctype="multipart/form-data">
+<?php echo csrf_field(); ?>
 <input type="hidden" name="ins_id" value="<?php echo isset($resInstituteData->ins_id)?$resInstituteData->ins_id:'0'?>">
 <div class="row row-xs">
 <div class="col-lg-8">
@@ -121,7 +121,7 @@
 </div>
 </div>
 <div class="card-footer" style="padding: 0.75rem 1rem;">
-<a href="{{route('video-category')}}">+ Add New Category</a>
+<a href="<?php echo e(route('video-category')); ?>">+ Add New Category</a>
 </div>
 </div>
 <div class="card mg-b-15">
@@ -189,4 +189,5 @@
     CKEDITOR.config.allowedContent = true;
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('Csadmin.Layout.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\php\xamp\htdocs\coachingzon\resources\views/Csadmin/Institute/addNew.blade.php ENDPATH**/ ?>

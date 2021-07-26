@@ -26,7 +26,7 @@
 <?php echo csrf_field(); ?>
 <div class="d-sm-flex justify-content-end mg-b-0">
 <div class="form-group mg-b-0">
-<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="<?php echo e(Session::get('$status')); ?>">
+<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="<?php echo e(Session::get($status)); ?>">
 </div>
 <div class="mg-sm-l-10">
     <button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>

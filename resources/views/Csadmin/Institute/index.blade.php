@@ -30,7 +30,6 @@
 </div>
 <div class="card-body">
 @include('Csadmin.bulkaction', ['status' => 'FILTER_INSTITUTE'])
- 
 </div>
 <div class="table-responsive">
 <table class="table mg-b-0">
@@ -77,7 +76,7 @@ foreach($resVideoData as $video)
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
-<a href="{{route('add-new-video',$video->ins_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
+<a href="{{route('add-new-institute',$video->ins_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
 <a href="{{route('videoDelete',$video->ins_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>
 </div>

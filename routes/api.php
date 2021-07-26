@@ -27,4 +27,9 @@ Route::any('/login/forgot', 'LoginController@forgot')->name('forgot');
 Route::any('/login/changepassword', 'LoginController@changepassword')->name('changepassword');
 Route::any('/login/updateuserprofile', 'LoginController@updateuserprofile')->name('updateuserprofile');
 Route::any('/login/updatestudentprofileimage', 'LoginController@updatestudentprofileimage')->name('updatestudentprofileimage');
+
+Route::any('/dashboard/getoffer', 'DashboardController@getoffer')->name('getoffer');
+Route::any('/dashboard/wallethistory', 'DashboardController@wallethistory')->name('wallethistory');
+Route::any('/dashboard/getbalance', 'DashboardController@getbalance')->name('getbalance');
+
 ///Route::auto('/login', LoginController::class);
