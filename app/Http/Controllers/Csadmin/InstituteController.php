@@ -22,6 +22,7 @@ class InstituteController extends Controller
     
     /***********************Bulk Action ************/
       $aryPostData = $request->all();
+      print_r($aryPostData);
       if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
          $aryPostData =$_POST;
         $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -30,17 +31,17 @@ class InstituteController extends Controller
        if($intBulkAction==1)
        {
         CsInstitute::whereIn('ins_id', $aryIds)->delete();
-           return redirect()->route('manageintitute')->with('status', 'Entry Deleted Successfully');
+           return redirect()->route('manageinstitute')->with('status', 'Entry Deleted Successfully');
        }
        if($intBulkAction==2)
        {
         CsInstitute::whereIn('ins_id', $aryIds)->update(['ins_status' => 1]);
-           return redirect()->route('manageintitute')->with('status', 'Entry Updated Successfully');
+           return redirect()->route('manageinstitute')->with('status', 'Entry Updated Successfully');
        }
        if($intBulkAction==3)
        {
         CsInstitute::whereIn('ins_id',$aryIds)->update(['ins_status' => 0]);
-           return redirect()->route('manageintitute')->with('status', 'Entry Updated Successfully');
+           return redirect()->route('manageinstitute')->with('status', 'Entry Updated Successfully');
        }
        endIf;
      /***********************Bulk Action ************/
@@ -58,7 +59,7 @@ class InstituteController extends Controller
        if(session()->has('FILTER_INSTITUTE')){
        $strFilterKeyword = Session::get('FILTER_INSTITUTE');
        $resVideoData = CsInstitute::where('ins_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-       //print_r($resVideoData);
+       //print_r($resVideoData); die;
        }else{
        $resVideoData = CsInstitute::paginate(20);
        }    

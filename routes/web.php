@@ -161,8 +161,11 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
 
     Route::group(['prefix'=>'intitute'], function(){
         Route::any('/', 'InstituteController@index')->name('manageinstitute');
-        Route::any('/category', 'InstituteCategoryController@index')->name('manageinstitutecategory');
+        Route::any('/status/{id}', 'InstituteController@index')->name('institutestatus');
+        Route::any('/category', 'InstituteCategoryController@index')->name('manageinstitutecategory');        
     });
+
+
     /*******************/
     });
 });

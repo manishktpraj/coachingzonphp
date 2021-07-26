@@ -19,8 +19,9 @@ public static function sendSms($intMobileNumber,$message)
 {
     $curl = curl_init();
     $message =urlencode($message);
+    $strUrl ="http://trans.masssms.tk/api.php?username=samyak123&password=samyak@123&sender=SAMYNK&sendto=$intMobileNumber&message=$message";
     curl_setopt_array($curl, array(
-    CURLOPT_URL => "https://api.msg91.com/api/sendhttp.php?mobiles=$intMobileNumber&authkey=330677AyX3DKN05f7ab382P1&route=4&sender=NEONCS&message=$message&country=91&DLT_TE_ID=1207161284950976938",
+    CURLOPT_URL =>$strUrl,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "",
     CURLOPT_MAXREDIRS => 10,
@@ -33,6 +34,7 @@ public static function sendSms($intMobileNumber,$message)
     $response = curl_exec($curl);
     $err = curl_error($curl);
     curl_close($curl);
+return true;
 }
 
 
@@ -47,7 +49,7 @@ public static function sendSms($intMobileNumber,$message)
             $data = (object)$aryPostData;
             $rowUserInfo = CsStudent::where('student_email', '=', $data->student_email)
                                     ->orWhere('student_phone', '=', $data->student_email)
-                                    ->orWhere('student_password', '=', $data->student_password)
+                                    ->where('student_password', '=', $data->student_password)
                                     ->first();
     
             if(isset($rowUserInfo->student_id) && $rowUserInfo->student_id>0)
@@ -87,6 +89,8 @@ public static function sendSms($intMobileNumber,$message)
                 CsStudent::where('student_id',$rowUserInfo->student_id)->update(['student_otp'=>$strRandomOtp]);
                 $rowUserInfo = CsStudent::where('student_phone', '=', $data->student_phone)->first();
                  $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$strRandomOtp.' .DO NOT SHARE WITH ANYBODY.NEONCS';
+                                 $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$strRandomOtp;
+
                  self::sendSms($data->student_phone,$strMessage);
                 $aryResponse['notification']='Login Successfully...';
                 $aryResponse['results'] = $rowUserInfo;
@@ -100,7 +104,8 @@ public static function sendSms($intMobileNumber,$message)
                 
                 $intUserId = $postobj->student_id;
                  $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$strRandomOtp.' .DO NOT SHARE WITH ANYBODY.NEONCS';
-                self::sendSms($data->student_phone,$strMessage);
+                 $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$strRandomOtp;
+                 self::sendSms($data->student_phone,$strMessage);
                 $aryResponse['message']='ok';
                 $aryResponse['notification']='OTP Sent  To Your Register Mobile Number';
                 $resUserInfo = CsStudent::where('student_id', '=',$intUserId)->first();
@@ -123,6 +128,7 @@ public static function sendSms($intMobileNumber,$message)
             $data = (object)$request->all();
             $rowUserInfo = CsStudent::where('student_id', '=',$data->student_id)->first();
             $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$rowUserInfo['student_otp'].' .DO NOT SHARE WITH ANYBODY.NEONCS';
+            $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$rowUserInfo['student_otp'];
             self::sendSms($rowUserInfo['student_phone'],$strMessage);
             $aryResponse['message']='ok';
             $aryResponse['notification']='OTP Resent To Your Register Mobile Number';
@@ -268,6 +274,7 @@ public static function sendSms($intMobileNumber,$message)
                 $rowUserInfo->save();
                 $rowUserInfo = CsStudent::where('student_phone', '=', $data->student_phone)->first();
                 $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$strRandomOtp.' .DO NOT SHARE WITH ANYBODY.NEONCS';
+                $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$strRandomOtp;
                 self::sendSms($data->student_phone,$strMessage);
                 $aryResponse['notification']='Sms Sent to your registered mobile number';
                 $aryResponse['results'] = $rowUserInfo;
