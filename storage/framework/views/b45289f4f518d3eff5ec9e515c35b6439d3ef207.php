@@ -16,7 +16,7 @@
 </div>
 <div class="d-none d-md-block">
 <a href="#" class="btn btn-sm pd-x-15 btn-white btn-uppercase"><i data-feather="file" class="wd-10 mg-r-5"></i>Export</a>
-<a href="<?php echo e(route('add-new-video')); ?>" class="btn btn-sm pd-x-15 btn-primary btn-uppercase  mg-l-5"><i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Institute</a>
+<a href="<?php echo e(route('add-new-institute')); ?>" class="btn btn-sm pd-x-15 btn-primary btn-uppercase  mg-l-5"><i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Institute</a>
 </div>
 </div>
 <div class="row row-xs">

@@ -5,24 +5,27 @@ namespace App\Http\Controllers\Csadmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Model\CsInstituteCategory;
+use Session;
+use Illuminate\Support\Str;
 
 
 class InstituteCategoryController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index(Request $request, $intid=NULL)
   {
-     
+  //echo $int;  
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
         Session::forget('FILTER_INSTITUTE_CATEGORY');
-        return redirect()->route('manageintitutecategory');   
+        return redirect()->route('manageinstitutecategory');   
         }
      /***********************Reset Filter Session ************/
      
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
+       //print_r($aryPostData);
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
           $aryPostData =$_POST;
          $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -31,17 +34,17 @@ class InstituteCategoryController extends Controller
         if($intBulkAction==1)
         {
             CsInstituteCategory::whereIn('icat_id', $aryIds)->delete();
-            return redirect()->route('manageintitute')->with('status', 'Entry Deleted Successfully');
+            return redirect()->route('manageinstitutecategory')->with('status', 'Entry Deleted Successfully');
         }
         if($intBulkAction==2)
         {
             CsInstituteCategory::whereIn('icat_id', $aryIds)->update(['icat_status' => 1]);
-            return redirect()->route('manageintitute')->with('status', 'Entry Updated Successfully');
+            return redirect()->route('manageinstitutecategory')->with('status', 'Entry Updated Successfully');
         }
         if($intBulkAction==3)
         {
             CsInstituteCategory::whereIn('icat_id',$aryIds)->update(['icat_status' => 0]);
-            return redirect()->route('manageintitute')->with('status', 'Entry Updated Successfully');
+            return redirect()->route('manageinstitutecategory')->with('status', 'Entry Updated Successfully');
         }
         endIf;
       /***********************Bulk Action ************/
@@ -49,30 +52,35 @@ class InstituteCategoryController extends Controller
         
            /***********************Apply Condition ************/
    
-        if($request->get('FILTER_INSTITUTE_CATEGORY')!='')
-        {
-        Session::put('FILTER_INSTITUTE_CATEGORY', $request->get('filter_keyword'));
-        Session::save(); 
-        }
+           if($request->get('filter_keyword')!='')
+           {
+     
+           Session::put('FILTER_INSTITUTE_CATEGORY', $request->get('filter_keyword'));
+           Session::save(); 
+    
+    
+           }
            /***********************Apply Condition ************/
    
         if(session()->has('FILTER_INSTITUTE_CATEGORY')){
         $strFilterKeyword = Session::get('FILTER_INSTITUTE_CATEGORY');
         $resCategoryData = CsInstituteCategory::where('icat_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-        //print_r($resVideoData);
         }else{
         $resCategoryData = CsInstituteCategory::paginate(20);
         }    
-     
-      
-    //$resVideoData = CsInstituteCategory::paginate(20);
-    $resCategoryData = CsInstituteCategory::orderBy('icat_id', 'ASC')->get();
+        $rowCategoryData =array();
+        if($intid>0){
+            $rowCategoryData = CsInstituteCategory::where('icat_id','=',$intid)->first();
+        }
+        //$resVideoData = CsInstituteCategory::paginate(20);
+        // $resCategoryData = CsInstituteCategory::orderBy('icat_id', 'ASC')->get();
     $tree = $this->buildTree($resCategoryData);
     $strCategoryHtml = $this->getCatgoryChildHtml($tree);
     $resChildCategory = CsInstituteCategory::get();
+   // print_r($tree);
 
     $title='Manage Intitute Category';
-    return view('Csadmin.Institute.category',compact('title','resCategoryData','resCategoryData','strCategoryHtml','resChildCategory'));
+    return view('Csadmin.Institute.category',compact('title','rowCategoryData','resCategoryData','strCategoryHtml','resChildCategory','rowCategoryData'));
   
   }
 
@@ -123,7 +131,7 @@ class InstituteCategoryController extends Controller
                           </div>
                       </td>';  */
           $strHtml .='<td><p class="mg-b-0 tx-medium">'.$strExtraData.$label['icat_name'].'</p></td>'; 
-          //print_r($strExtraData).$label['vc_name'];
+          //print_r($strExtraData).$label['icat_name'];
           if($label['icat_status']==0){
               $strHtml .='<td><a href="'.route('catstatus',$label['icat_id']).'" onclick="return confirm(\'Are you sure?\')"><span class="badge badge-danger">Inactive</span></a></td>';
           }else{
@@ -139,8 +147,8 @@ class InstituteCategoryController extends Controller
           $strHtml .='<td>
                           <div class="d-flex align-self-center justify-content-center">
                               <nav class="nav nav-icon-only">
-                                  <a href="'.ADMIN_URL.'video-category/'.$label['icat_id'].'" onclick="return confirm(\'Are you sure?\')" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
-                                  <a href="'.ADMIN_URL.'deleteVCategory/'.$label['icat_id'].'" onclick="return confirm(\'Are you sure?\')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
+                                  <a href="'.route('manageinstitutecategory',$label['icat_id']).'" onclick="return confirm(\'Are you sure?\')" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
+                                  <a href="'.route('deleteCat',$label['icat_id']).'" onclick="return confirm(\'Are you sure?\')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
                               </nav>
                           </div>
                       </td>';}
@@ -167,5 +175,36 @@ class InstituteCategoryController extends Controller
         CsInstituteCategory::where('icat_id', $intCategoryId)->update(array('icat_status' => $status));
         return redirect()->route('manageinstitutecategory')->with('status', 'Entry Edited Successfully');
     }
- 
+    public function deleteCat($intCategoryId)
+    {   
+        CsInstituteCategory::where('icat_id', $intCategoryId)->delete();
+        return redirect()->route('manageinstitutecategory')->with('status', 'Entry Deleted Successfully');
+    }
+
+
+
+    function insCategoryProccess(Request $request)
+    {
+        $aryPostData = $request->all();
+        //print_r($aryPostData);die;
+        if(isset($aryPostData['icat_id']) && $aryPostData['icat_id']>0)
+        {
+            $postobj = CsInstituteCategory::where('icat_id',$aryPostData['icat_id'])->first();
+        }else{
+            $postobj = new CsInstituteCategory;
+            $postobj->icat_slug = Str::slug($aryPostData['icat_name'], '-');
+        }   
+        $postobj->icat_status = 1;
+        $postobj->icat_name = $aryPostData['icat_name'];
+        $postobj->icat_parent =0;
+        $postobj->icat_description = $aryPostData['icat_description'];
+        
+        if($postobj->save())    
+        {
+            return redirect()->route('manageinstitutecategory')->with('status', 'Entry Saved Successfully.');   
+        }else{
+            return redirect()->route('manageinstitutecategory')->with('error', 'Server Not Responed');
+        }
+    }
+
 }

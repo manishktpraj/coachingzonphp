@@ -60,7 +60,7 @@
 <a href="" class="nav-link"><i data-feather="help-circle"></i> <span>Institute</span></a>
 <ul>
 <li class="<?php echo (isset($title) && $title == 'Manage Institute')?'active':''; ?>"><a href="{{route('manageinstitute')}}">Manage Institute</a></li>
-<li class="<?php echo (isset($title) && $title == 'Add New Institute')?'active':''; ?>"><a href="{{route('add-new-question')}}">Add New</a></li>
+<li class="<?php echo (isset($title) && $title == 'Add New Institute')?'active':''; ?>"><a href="{{route('add-new-institute')}}">Add New</a></li>
 <li class="<?php echo (isset($title) && $title == 'Manage Institute Category')?'active':''; ?>"><a href="{{route('manageinstitutecategory')}}">Category</a></li>
 </ul>
 </li>

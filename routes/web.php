@@ -163,11 +163,12 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         Route::any('/', 'InstituteController@index')->name('manageinstitute');
         Route::any('/status/{id}', 'InstituteController@index')->name('institutestatus');
         Route::any('/add-new-institute/{id?}', 'InstituteController@addnew')->name('add-new-institute');
-        Route::any('/category', 'InstituteCategoryController@index')->name('manageinstitutecategory');     
+        Route::any('/category/{id?}', 'InstituteCategoryController@index')->name('manageinstitutecategory');     
         Route::any('/catstatus/{id}','InstituteCategoryController@catstatus')->name('catstatus');
-
+        Route::any('/deleteCat/{id}', 'InstituteCategoryController@deleteCat')->name('deleteCat');
+        Route::any('/insCategoryProccess', 'InstituteCategoryController@insCategoryProccess')->name('insCategoryProccess');
         
-        
+          
     });
 
 
