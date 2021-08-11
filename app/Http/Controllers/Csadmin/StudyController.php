@@ -14,6 +14,8 @@ class StudyController extends Controller
 {
     public function index(Request $request)
     {   
+        $user=Session::get("CS_ADMIN");
+
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -59,21 +61,45 @@ class StudyController extends Controller
    
         if(session()->has('FILTER_STUDY')){
         $strFilterKeyword = Session::get('FILTER_STUDY');
-        $resStudyMaterialData = CsStudyMaterial::where('sm_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-        //print_r($resVideoData);
+        if($user->role_type==0){
+            $resStudyMaterialData = CsStudyMaterial::where('sm_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
         }else{
-        $resStudyMaterialData = CsStudyMaterial::paginate(20);
-        }    
-     
-       // $resStudyMaterialData = CsStudyMaterial::paginate(20);
+            $resStudyMaterialData = CsStudyMaterial::where('sm_name', 'LIKE', "%{$strFilterKeyword}%")->where('sm_institute','=',$user->user_id)->paginate(20);
+            }}else{
+                if($user->role_type==0){
+                    $resStudyMaterialData = CsStudyMaterial::leftJoin('cs_institute', function($join) {
+                        $join->on('cs_study_material.sm_institute', '=', 'cs_institute.ins_id');
+                      })
+                      ->paginate();
+                }else{
+                    $resStudyMaterialData = CsStudyMaterial::leftJoin('cs_institute', function($join) {
+                        $join->on('cs_study_material.sm_institute', '=', 'cs_institute.ins_id');
+                      })
+                      ->where('sm_institute','=',$user->user_id)->paginate(20);
+    
+                }
+            }    
+
+
+
+       
         $title='Study';
-        return view('Csadmin.Study.index',compact('title','resStudyMaterialData'));
+        return view('Csadmin.Study.index',compact('title','resStudyMaterialData','user'));
     }
     public function addNewStudy($intStudyId=0)
     {
+        $user=Session::get("CS_ADMIN");
         $resStudyMaterialData = array();
         if($intStudyId>0){
-            $resStudyMaterialData = CsStudyMaterial::where('sm_id','=',$intStudyId)->first();
+            if($user->role_type==0){
+                $resStudyMaterialData = CsStudyMaterial::where('sm_id','=',$intStudyId)->first();
+            }else{
+                $resStudyMaterialData = CsStudyMaterial::where('sm_id','=',$intStudyId)->where('sm_institute','=',$user->user_id)->first();
+    
+                }
+
+
+
         }
         $strCategory =array();
         if(isset($resStudyMaterialData->sm_sc_id))
@@ -117,7 +143,7 @@ class StudyController extends Controller
             $margin =$intLevel*20;
             $strLevelByMargin = 'margin-left:'.$margin.'px;';
             $strHtml .= '<label class="cch-check" style="'.$strLevelByMargin.'">'.$label->sc_name.'
-            <input type="checkbox" name="sm_sc_id_[]" value="'.$label->sc_id.'" '.$strChecked.'><span class="checkmark"></span>
+            <input type="checkbox" name="sm_sc_id_[]" value="'.$label->sc_id.'" '.$strChecked.' class="clsSelectSingle"><span class="checkmark"></span>
             </label>';
             if(isset($label->children)){
                 $intLevel++;
@@ -129,6 +155,8 @@ class StudyController extends Controller
     
     function studyMaterialProccess(Request $request)
     {
+        $user=Session::get("CS_ADMIN");
+
         $aryPostData = $request->all();
         //print_r($aryPostData);die;
         if(isset($aryPostData['sm_id']) && $aryPostData['sm_id']>0)
@@ -137,6 +165,8 @@ class StudyController extends Controller
         }else{
             $postobj = new CsStudyMaterial;
             $postobj->sm_slug = Str::slug($aryPostData['sm_name'], '-');
+            $postobj->sm_institute = $user->user_id;
+
         }   
         
         $postobj->sm_status = 1;
@@ -212,8 +242,64 @@ class StudyController extends Controller
         return redirect()->route('all-study-material')->with('status', 'Entry Deleted Successfully');
     }
     
-    public function studyCategory($intCategoryId=0)
+    public function studyCategory(Request $request,$intCategoryId=0)
     {
+         //echo $int;  
+     /***********************Reset Filter Session ************/
+     if($request->get('reset')==1)
+     {
+     Session::forget('FILTER_STUDY_CATEGORY');
+     return redirect()->route('study-category');   
+     }
+  /***********************Reset Filter Session ************/
+  
+  /***********************Bulk Action ************/
+    $aryPostData = $request->all();
+    //print_r($aryPostData);
+    if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+       $aryPostData =$_POST;
+      $aryIds = explode(',',$aryPostData['bulkvalue']);
+     $intBulkAction = $aryPostData['bulkaction'];
+ 
+     if($intBulkAction==1)
+     {
+        CsScategory::whereIn('sc_id', $aryIds)->delete();
+         return redirect()->route('study-category')->with('status', 'Entry Deleted Successfully');
+     }
+     if($intBulkAction==2)
+     {
+        CsScategory::whereIn('sc_id', $aryIds)->update(['sc_status' => 1]);
+         return redirect()->route('study-category')->with('status', 'Entry Updated Successfully');
+     }
+     if($intBulkAction==3)
+     {
+        CsScategory::whereIn('sc_id',$aryIds)->update(['sc_status' => 0]);
+         return redirect()->route('study-category')->with('status', 'Entry Updated Successfully');
+     }
+     endIf;
+   /***********************Bulk Action ************/
+  
+     
+        /***********************Apply Condition ************/
+
+        if($request->get('filter_keyword')!='')
+        {
+  
+        Session::put('FILTER_STUDY_CATEGORY', $request->get('filter_keyword'));
+        Session::save(); 
+ 
+ 
+        }
+        /***********************Apply Condition ************/
+
+     if(session()->has('FILTER_STUDY_CATEGORY')){
+     $strFilterKeyword = Session::get('FILTER_STUDY_CATEGORY');
+     $resCategoryData = CsScategory::where('sc_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+     }else{
+     $resCategoryData = CsScategory::paginate(20);
+     }    
+
+
         $intSelectParent=0;
         $rowCategoryData=array();
         if($intCategoryId>0)
@@ -221,7 +307,6 @@ class StudyController extends Controller
             $rowCategoryData = CsScategory::where('sc_id',$intCategoryId)->first();
             $intSelectParent = $rowCategoryData->sc_parent;
         }
-        $resCategoryData = CsScategory::get();
         $tree = $this->buildTree($resCategoryData);
         $strCategoryHtml = $this->getCatgoryChildHtml($tree);
         $resChildCategory = CsScategory::orderBy('sc_order', 'ASC')->get();
@@ -277,8 +362,8 @@ class StudyController extends Controller
                             </td>';
                 $strHtml .='<td style="text-align:center">
                                 <div class="media align-items-center mg-b-0">
-                                    <div class="avatar" style="margin:0 auto">
-                                        <img src="'.$src.'" class="rounded-circle" alt="">
+                                    <div class="avatar" style="margin:0 auto;border:1px solid #ddd;">
+                                        <img src="'.$src.'" class="rounded" alt="">
                                     </div>
                                 </div>
                             </td>';  
@@ -395,57 +480,6 @@ class StudyController extends Controller
 
         CsScategory::where('sc_id', $intCategoryId)->delete();
         return redirect()->route('study-category')->with('status', 'Entry Deleted Successfully');
-    }
-    
-    
-        public function bulkActionSM(Request $request)
-    {
-        $aryPostData = $request->all();
-        //print_r($aryPostData);die;
-        unset($aryPostData['_token']);
-        $aryPostData =$_POST;
-        $intBulkAction = $aryPostData['bulkaction'];
-        if($intBulkAction==1)
-        {
-            CsStudyMaterial::whereIn('sm_id', $aryPostData['sm_id'])->delete();
-            return redirect()->route('all-study-material')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsStudyMaterial::whereIn('sm_id', $aryPostData['sm_id'])->update(['sm_status' => 1]);
-            return redirect()->route('all-study-material')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsStudyMaterial::whereIn('sm_id', $aryPostData['sm_id'])->update(['sm_status' => 0]);
-            return redirect()->route('all-study-material')->with('status', 'Entry Deleted Successfully');
-        }
-         
-    }
-    
-     public function bulkActionsmCat(Request $request)
-    {
-        $aryPostData = $request->all();
-        //print_r($aryPostData);die;
-        unset($aryPostData['_token']);
-        $aryPostData =$_POST;
-        $intBulkAction = $aryPostData['bulkaction'];
-        if($intBulkAction==1)
-        {
-            CsScategory::whereIn('sc_id', $aryPostData['sc_id'])->delete();
-            return redirect()->route('study-category')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsScategory::whereIn('sc_id', $aryPostData['sc_id'])->update(['sc_status' => 1]);
-            return redirect()->route('study-category')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsScategory::whereIn('sc_id', $aryPostData['sc_id'])->update(['sc_status' => 0]);
-            return redirect()->route('study-category')->with('status', 'Entry Deleted Successfully');
-        }
-         
     }
     
     

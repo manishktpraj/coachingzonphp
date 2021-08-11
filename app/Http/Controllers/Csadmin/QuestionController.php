@@ -27,14 +27,69 @@ class QuestionController extends Controller
     return view('Csadmin.Question.addNewQuestion',compact('title','resSubData'));
   }
   
-  public function questionSubjects($intCategoryId=0)
+  public function questionSubjects(Request $request,$intCategoryId=0)
   {
+      //echo $int;  
+     /***********************Reset Filter Session ************/
+     if($request->get('reset')==1)
+     {
+     Session::forget('FILTER_SUBJECT_CATEGORY');
+     return redirect()->route('question-subjects');   
+     }
+  /***********************Reset Filter Session ************/
+  
+  /***********************Bulk Action ************/
+    $aryPostData = $request->all();
+    //print_r($aryPostData);
+    if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+       $aryPostData =$_POST;
+      $aryIds = explode(',',$aryPostData['bulkvalue']);
+     $intBulkAction = $aryPostData['bulkaction'];
+ 
+     if($intBulkAction==1)
+     {
+        CsSubject::whereIn('sc_id', $aryIds)->delete();
+         return redirect()->route('question-subjects')->with('status', 'Entry Deleted Successfully');
+     }
+     if($intBulkAction==2)
+     {
+        CsSubject::whereIn('sc_id', $aryIds)->update(['sc_status' => 1]);
+         return redirect()->route('question-subjects')->with('status', 'Entry Updated Successfully');
+     }
+     if($intBulkAction==3)
+     {
+        CsSubject::whereIn('sc_id',$aryIds)->update(['sc_status' => 0]);
+         return redirect()->route('question-subjects')->with('status', 'Entry Updated Successfully');
+     }
+     endIf;
+   /***********************Bulk Action ************/
+  
+     
+        /***********************Apply Condition ************/
+
+        if($request->get('filter_keyword')!='')
+        {
+  
+        Session::put('FILTER_SUBJECT_CATEGORY', $request->get('filter_keyword'));
+        Session::save(); 
+ 
+ 
+        }
+        /***********************Apply Condition ************/
+
+     if(session()->has('FILTER_SUBJECT_CATEGORY')){
+     $strFilterKeyword = Session::get('FILTER_SUBJECT_CATEGORY');
+     $resCategoryData = CsSubject::where('sc_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+     }else{
+     $resCategoryData = CsSubject::paginate(20);
+     }    
+     
       $rowCategoryData=array();
         if($intCategoryId>0)
         {
             $rowCategoryData = CsSubject::where('sc_id',$intCategoryId)->first();
         }
-        $resCategoryData = CsSubject::get();
+        // $resCategoryData = CsSubject::get();
         $tree = $this->buildTree($resCategoryData);
         $strCategoryHtml = $this->getCatgoryChildHtml($tree);
         $resChildCategory = CsSubject::get();
@@ -151,48 +206,8 @@ class QuestionController extends Controller
         CsSubject::where('sc_id', $intCategoryId)->delete();
         return redirect()->route('question-subjects')->with('status', 'Entry Deleted Successfully');
     }
-     /*   
-    function getcategorylevel($aryCategory)
-    {
-        if($aryCategory['sc_parent']==0)
-        {
-            return 0;
-        }else{
-          $res = CsScategory::where('sc_id','=',$aryCategory['sc_parent'])->first();
-            if($res->sc_parent==0)
-            {
-                return 1;
-            }else{
-               return 2; 
-            }
-        }
-    }*/
-    
-    public function bulkActionsSubject(Request $request)
-    {
-        $aryPostData = $request->all();
-        //print_r($aryPostData);die;
-        unset($aryPostData['_token']);
-        $aryPostData =$_POST;
-        $intBulkAction = $aryPostData['bulkaction'];
-        if($intBulkAction==1)
-        {
-            CsSubject::whereIn('sc_id', $aryPostData['sc_id'])->delete();
-            return redirect()->route('question-subjects')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsSubject::whereIn('sc_id', $aryPostData['sc_id'])->update(['sc_status' => 1]);
-            return redirect()->route('question-subjects')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsSubject::whereIn('sc_id', $aryPostData['sc_id'])->update(['sc_status' => 0]);
-            return redirect()->route('question-subjects')->with('status', 'Entry Deleted Successfully');
-        }
-         
-    }
-    
+     
+       
     public function exportQuestion(Request $request){
         
       $title='Export Question';

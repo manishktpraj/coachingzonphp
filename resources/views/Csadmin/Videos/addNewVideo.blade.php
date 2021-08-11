@@ -148,9 +148,11 @@
 </div>
 </div>
 </div>
+<?php if(in_array('10',$delete_data) || in_array('10',$edit_data) || in_array('10',$view_data)){?>
 <div class="card-footer" style="padding: 0.75rem 1rem;">
 <a href="{{route('video-category')}}">+ Add New Category</a>
 </div>
+<?php } ?>
 </div>
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">

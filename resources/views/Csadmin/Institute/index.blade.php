@@ -36,10 +36,11 @@
 <thead>
 <tr>
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
-<th scope="col" style="text-align:center;width:50px;">S.No.</th>
+<th scope="col" style="text-align:center;width:9%;">Institute ID</th>
 <th scope="col">Institute Details</th>
+<th scope="col" style="text-align:center;">Total Sale</th>
 <th scope="col">Status</th>
-<th scope="col">Date</th>
+<th scope="col">Published Date</th>
 <th scope="col" style="text-align:center">Action</th>
 </tr>
 </thead>
@@ -53,22 +54,22 @@ foreach($resVideoData as $video)
 ?>
 <tr>
 <th scope="row" style="text-align:center"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="ins_id[]" value="<?php echo $video->ins_id ?>"></th>
-<th scope="row" style="text-align:center"><?php echo $i++;?></th>
+<th scope="row" style="text-align:center"><?php echo $video->ins_uniqueId;?></th>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar"><img src="<?php echo (isset($video->ins_cover_image) && $video->ins_cover_image!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->ins_cover_image:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar"><img src="<?php echo (isset($video->ins_logo) && $video->ins_logo!="")?SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE.$video->ins_logo:SITE_NO_IMAGE_PATH;?>" class="rounded"  alt="" style="border:1px solid #ddd;"></div>
 <div class="media-body pd-l-10">
-<h6 class="mg-b-3"  style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;width: 200px;"><a href="<?php echo(isset($video->video_file) && $video->video_file!="")? SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->video_file:'' ?>" <?php if(isset($video->video_file) && $video->video_file!=""){echo "target='_blank'";}?> ><?php echo $video->ins_name;?></a></h6>
-<span class="d-block tx-13 tx-color-03"><?php echo $video->video_vc_name?></span>
+<h6 class="mg-b-3"  style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;width: 200px;"><a href="<?php echo(isset($video->ins_name) && $video->ins_name!="")? SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->ins_name:'' ?>" <?php if(isset($video->ins_name) && $video->ins_name!=""){echo "target='_blank'";}?> ><?php echo $video->ins_name;?></a></h6>
+<span class="d-block tx-13 tx-color-03"><?php echo $video->ins_state.",".$video->ins_city?></span>
 </div>
 </div>
 </td>
-
+<td style="text-align:center;">0</td>
 <td>
-    <?php if($video->video_status==1){?>
-    <a href="{{route('institutestatus',$video->ins_id)}}"><span class="badge badge-success">Active</span></a>
+    <?php if($video->ins_status==1){?>
+    <a href="{{route('insStatus',$video->ins_id)}}"><span class="badge badge-success">Active</span></a>
     <?php }else{?>
-    <a href="{{route('institutestatus',$video->ins_id)}}"><span class="badge badge-danger">Inactive</span></a>
+    <a href="{{route('insStatus',$video->ins_id)}}"><span class="badge badge-danger">Inactive</span></a>
     <?php }?>
     
 </td>
@@ -76,8 +77,9 @@ foreach($resVideoData as $video)
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
+<a href="{{route('add-new-institute',$video->ins_id )}}" class="btn btn-info btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-eye" style="font-size:11px;"></i></a>
 <a href="{{route('add-new-institute',$video->ins_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
-<a href="{{route('videoDelete',$video->ins_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
+<a href="{{route('insDelete',$video->ins_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>
 </div>
 </td>

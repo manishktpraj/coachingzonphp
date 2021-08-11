@@ -16,6 +16,9 @@
 <form method="post" action="{{route('studentProccess')}}" enctype="multipart/form-data">
 @csrf
 <input type="hidden" name="student_id" value="<?php echo isset($resStudentData->student_id)?$resStudentData->student_id:''?>">
+<input type="hidden" name="student_ins_id" value="<?php echo isset($ins_id)?$ins_id:''?>">
+
+
 <div class="row row-xs">
 <div class="col-lg-12">
 <div class="card mg-b-15">
@@ -37,7 +40,7 @@
 </select>
 </div>
 </div> 
-
+ 
 <div class="col-lg-6">
 <div class="form-group" style="margin-bottom:15px">
 <label>First Name:</label>

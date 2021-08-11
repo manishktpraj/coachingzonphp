@@ -6,7 +6,7 @@
 <meta name="description" content="Responsive Bootstrap 4 Dashboard Template">
 <meta name="author" content="ThemePixels">
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo ADMIN_ASSETS_URL?>assets/img/favicon.png">
-<title>DashForge Responsive Bootstrap 4 Dashboard Template</title>
+<title>CoachingZon</title>
 <link href="<?php echo ADMIN_ASSETS_URL?>lib/fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link href="<?php echo ADMIN_ASSETS_URL?>lib/ionicons/css/ionicons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo ADMIN_ASSETS_URL?>assets/css/dashforge.css">

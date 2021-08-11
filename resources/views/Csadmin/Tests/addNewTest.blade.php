@@ -45,7 +45,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Subjects</h6>
 </div>
 <div class="card-body" >
-    
+<?php //print_r($sub);?>   
 
 <div class="row row-xs">
 <div class="col-lg-3">
@@ -53,9 +53,14 @@
 <label>Subject:</label>
 <select class="custom-select" name="test_subject" required>
 <option value="">Select Subject</option>
-<option value="0" <?php echo (isset($resTestData->test_subject) && $resTestData->test_subject=="0")?'selected':''?> >Live Video</option>
-<option value="1" <?php echo (isset($resTestData->test_subject) && $resTestData->test_subject=="1")?'selected':''?> >Recorded Video</option>
-<option value="2" <?php echo (isset($resTestData->test_subject) && $resTestData->test_subject=="2")?'selected':''?> >Demo Video</option>
+<?php 
+
+
+foreach($sub as $s){?>
+
+<option value="<?php echo isset($s->sc_name)?$s->sc_name:''?>" <?php echo (isset($resTestData->test_subject) && $resTestData->test_subject==$s->sc_name)?'selected':''?> ><?php echo isset($s->sc_name)?$s->sc_name:''?></option>
+
+<?php } ?>
 
 </select>
 </div>
@@ -105,7 +110,7 @@
 </div>
 <div class="col-lg-4">
 <div class="form-group mg-b-10">
-<label>Announcement date:</label>
+<label>Result Announcement date:</label>
 <input type="date" class="form-control" name="test_announcement_date" value="<?php echo isset($resTestData->test_announcement_date)?$resTestData->test_announcement_date:''?>">    
 </div>
 </div>
@@ -150,9 +155,11 @@
 </div>
 </div>
 </div>
+<?php if(in_array('7',$delete_data) || in_array('7',$edit_data) || in_array('7',$view_data)){?>
 <div class="card-footer" style="padding: 0.75rem 1rem;">
 <a href="{{route('test-category')}}">+ Add New Category</a>
 </div>
+<?php } ?>
 </div>
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">

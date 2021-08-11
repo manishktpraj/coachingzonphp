@@ -29,20 +29,6 @@
 <input type="text" class="form-control" name="vc_name" required="" value="<?php echo isset($rowCategoryData->vc_name)?$rowCategoryData->vc_name:''?>">
 <span class="tx-color-03" style="font-size: 11px;">This name is appears on your site</span>
 </div>
-<?php //print_r($resCategoryData);
-// foreach($resCategoryData as $value){
-// echo $value->vc_name;
-//  if($value->vc_parent==$value->vc_id){
-//   echo $value->vc_name;
-//  }  
-    
-    
-// }
-
-//echo "shikha";
-
-?>
-
 <div class="form-group">
 <label>Parent Category:</label>
 <select class="custom-select" name="vc_parent">
@@ -52,9 +38,6 @@
 <!--<option <?php echo (isset($rowCategoryData->vc_parent) && $rowCategoryData->vc_parent==$value->vc_id)?'selected="selected"':''?> value="<?php echo $value->vc_id?>"><?php echo $value->vc_name;?></option>-->
 <!--<?php }?>-->
 </select>
-
-
-
 <span class="tx-color-03" style="font-size: 11px;line-height: 20px;">Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.</span>
 </div>
 <div class="form-group">
@@ -88,36 +71,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Video Categories Listings</h6>
 </div>
 <div class="card-body">
-<form method="post" action="<?php echo e(route('bulkActionVideoCat')); ?>"  enctype="multipart/form-data">
-<?php echo csrf_field(); ?>
-<div class="row">
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-start mg-b-0">
-<div class="form-group mg-b-0">
-<select class="custom-select" name="bulkaction" id="bulkactionSelect">
-<option value="">Bulk Action</option> 
-<option value="1">Delete</option>
-<option value="2">Active</option>
-<option value="3">Inactive</option>
-</select>
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" id="bulkaction-button" class="btn btn-primary pd-x-20">Apply</button>
-</div>
-</div>
-</div>
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-end mg-b-0">
-<div class="form-group mg-b-0">
-<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="">
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>
-</div>
-</div>
-</div>
-</div> 
-
+<?php echo $__env->make('Csadmin.bulkaction', ['status' => 'FILTER_VIDEO_CATEGORY'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </div>
 <div class="table-responsive">
 <table class="table mg-b-0">

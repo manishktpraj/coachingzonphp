@@ -28,3 +28,10 @@ define('SITE_THEME_IMAGE','theme_images/');
 define('SITE_FACULTY_IMAGE','faculty_images/');
 //define('CHAT_URL',SITE_URL.'portal/chat/');
 define('CHAT_URL',SITE_URL.'chat/');
+define('SITE_SLIDER_IMAGE','slider_images/');
+define('SITE_INSTITUTE_IMAGE','institute_images/');
+define('SITE_PRODUCT_IMAGE','product_images/');
+
+define('SITE_STAFF_IMAGE','staff_images/');
+define('SITE_NOTIFICATION_IMAGE',SITE_URL.'public/img/images.png');
+define('SITE_BOOK_IMAGE',SITE_URL.'public/img/book.png');

@@ -16,7 +16,7 @@
 </div>
 <form method="post" action="{{route('facultyProccess')}}" enctype="multipart/form-data">
 @csrf
-<input type="hidden" name="faculty_id" value="<?php echo isset($resfacultyData->faculty_id)?$resfacultyData->faculty_id:''?>">
+<input type="hidden" name="staff_id" value="<?php echo isset($resfacultyData->staff_id)?$resfacultyData->staff_id:''?>">
 <div class="row row-xs">
 <div class="col-lg-8">
 <div class="card mg-b-15">
@@ -25,44 +25,52 @@
 </div>
 <div class="card-body">
 <div class="row row-xs">
-<div class="col-lg-6">
+<div class="col-lg-12">
 <div class="form-group" style="margin-bottom:15px">
-<label>First Name:</label>
-<input type="text" class="form-control" required name="faculty_first_name" value="<?php echo isset($resfacultyData->faculty_first_name)?$resfacultyData->faculty_first_name:''?>">
+<label>Name:</label>
+<input type="text" class="form-control" required name="faculty_name" value="<?php echo isset($resfacultyData->staff_name)?$resfacultyData->staff_name:''?>">
 </div>
 </div>
-<div class="col-lg-6">
-<div class="form-group" style="margin-bottom:15px">
-<label>Last Name:</label>
-<input type="text" class="form-control" required name="faculty_last_name" value="<?php echo isset($resfacultyData->faculty_last_name)?$resfacultyData->faculty_last_name:''?>">
-</div>
-</div>
+
 <div class="col-lg-6">
 <div class="form-group" style="margin-bottom:15px">
 <label>Date of Birth:</label>
-<input type="date" class="form-control" required name="faculty_dob" value="<?php echo isset($resfacultyData->faculty_dob)?$resfacultyData->faculty_dob:''?>">
+<input type="date" class="form-control" required name="faculty_dob" value="<?php echo isset($resfacultyData->staff_dob)?$resfacultyData->staff_dob:''?>">
 </div>
 </div>
 <div class="col-lg-6">
 <div class="form-group" style="margin-bottom:15px">
 <label>Gender:</label>
 <select class="custom-select" name="faculty_gender" required="">
-<option value="male">Male</option>
-<option value="female">Female</option>
-<option value="other">Other</option>
+<option value="male" <?php echo (isset($resfacultyData->staff_gender) && $resfacultyData->staff_gender=="male")?'selected':''  ?>>Male</option>
+<option value="female" <?php echo (isset($resfacultyData->staff_gender) && $resfacultyData->staff_gender=="female")?'selected':''  ?>>Female</option>
+<option value="other" <?php echo (isset($resfacultyData->staff_gender) && $resfacultyData->staff_gender=="other")?'selected':''  ?>>Other</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group" style="margin-bottom:15px">
+<label>Role:</label>
+<select class="custom-select" name="faculty_role" required="">
+<option value="">Select Role</option>
+
+<?php foreach($resroleData as $role){?>
+<option value="<?php echo $role->role_id;?>" <?php echo (isset($resfacultyData->staff_role) && $resfacultyData->staff_role==$role->role_id)?'selected':''?>><?php echo $role->role_name;?></option>
+<?php } ?>
 </select>
 </div>
 </div>
 <div class="col-lg-6">
 <div class="form-group" style="margin-bottom:15px">
 <label>Email Id:</label>
-<input type="text" class="form-control" required name="faculty_email" value="<?php echo isset($resfacultyData->faculty_email)?$resfacultyData->faculty_email:''?>">
+<input type="text" class="form-control" required name="faculty_email" value="<?php echo isset($resfacultyData->staff_email)?$resfacultyData->staff_email:''?>">
 </div>
 </div>
 <div class="col-lg-6">
 <div class="form-group" style="margin-bottom:15px">
 <label>Mobile:</label>
-<input type="text" class="form-control" required name="faculty_phone" value="<?php echo isset($resfacultyData->faculty_phone)?$resfacultyData->faculty_phone:''?>">
+<input type="text" class="form-control" required name="faculty_phone" value="<?php echo isset($resfacultyData->staff_mobile)?$resfacultyData->staff_mobile:''?>">
 </div>
 </div>
 <div class="col-lg-6">
@@ -85,7 +93,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">About Us</h6>
 </div>
 <div class="card-body" style="padding:0px;">
-<textarea name="faculty_about" class="ckeditor"><?php echo isset($resfacultyData->faculty_about)?$resfacultyData->faculty_about:''?></textarea>
+<textarea name="faculty_about" class="ckeditor"><?php echo isset($resfacultyData->staff_about)?$resfacultyData->staff_about:''?></textarea>
 </div>
 </div>
 
@@ -112,7 +120,7 @@
 <div class="form-group">
 <div class="media align-items-center">
 <div class="avatar" style="height:60px; width:60px
-"><img id="faculty_img" src="<?php echo (isset($resfacultyData->faculty_img) && $resfacultyData->faculty_img!="")?SITE_UPLOAD_URL.SITE_FACULTY_IMAGE.$resfacultyData->faculty_img:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
+"><img id="faculty_img" src="<?php echo (isset($resfacultyData->staff_logo) && $resfacultyData->staff_logo!="")?SITE_UPLOAD_URL.SITE_FACULTY_IMAGE.$resfacultyData->staff_logo:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <div class="custom-file">
 <input type="file" name="faculty_img" class="custom-file-input" onchange="showPreview('faculty_img',this)" id="customFile">
@@ -129,7 +137,7 @@
 </div>
 </div>
 </div>
-
+ 
 
 <script>
     if($('.ckeditor').length>0){

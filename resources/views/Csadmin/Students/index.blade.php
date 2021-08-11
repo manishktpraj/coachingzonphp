@@ -25,7 +25,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Students Lists</h6>
 <div class="d-flex tx-18">
 <a href="" class="link-03 lh-0"><i class="icon ion-md-refresh"></i></a>
-</div>
+</div> 
 </div>
 <div class="card-body">
 @include('Csadmin.bulkaction', ['status' => 'FILTER_STUDENT'])
@@ -55,7 +55,7 @@ foreach($resStudentData as $students){?>
 <td scope="row"><?php echo $students->student_registration_id?></td>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar avatar-online"><img src="https://via.placeholder.com/500" class="rounded-circle" alt=""></div>
+<div class="avatar avatar-online" style="border:1px solid #ddd;"><img src="https://via.placeholder.com/500" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3"><a href="{{route('viewstudent',$students->student_id)}}"><?php echo $students->student_first_name.$students->student_last_name ?></a></h6>
 <span class="d-block tx-13 tx-color-03"><?php echo $students->student_email?></span>
@@ -73,14 +73,23 @@ foreach($resStudentData as $students){?>
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
-<a href="{{route('add-new-student',$students->student_id )}}" class="btn btn-info btn-icon mg-r-5" title="Assign Package" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
+<?php if(in_array('42',$view_data)){?>
+<a href="{{route('viewstudent',$students->student_id )}}" class="btn btn-info btn-icon mg-r-5" title="Assign Package" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
+<?php } if(in_array('42',$edit_data)){?>
 <a href="{{route('add-new-student',$students->student_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
+<?php } if(in_array('42',$delete_data)){?>
 <a href="{{route('studentDelete',$students->student_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
+<?php } ?>
 </nav>
 </div>
 </td>
 </tr>
-<?php }} ?>
+<?php }}else{ ?>
+    <tr><td colspan="9" class="text-center">No Record Found</td></tr>
+
+
+<?php } ?>
+
 </tbody>
 </table>
 </div>

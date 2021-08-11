@@ -38,6 +38,9 @@
 <th scope="col" style="text-align:center;width:50px;">S.No.</th>
 <th scope="col"> Coupon Name</th>
 <th scope="col"> Coupon Code</th>
+<?php if($user->staff_role==3){?>
+<th scope="col" style="text-align:center;">Published By</th>
+<?php } ?>
 <th scope="col"> Valid From</th>
 <th scope="col"> Valid To</th>
 <th>Status</th>
@@ -53,6 +56,9 @@ foreach($resOfferLists as $offer){?>
 <td scope="row" style="text-align:center"><?php echo $i++;?></td>
 <td><?php echo $offer->offers_name?></td>
 <td><?php echo $offer->coupon_code?></td>
+<?php if($user->staff_role==3){?>
+<td style="text-align:center;"><span class="tx-13"><?php echo isset($offer->ins_name)?$offer->ins_name:'Admin';?></span></td>
+<?php } ?>
 <td><?php echo $offer->offers_valid_from?></td>
 <td><?php echo $offer->offers_valid_to?></td>
 
@@ -70,7 +76,9 @@ foreach($resOfferLists as $offer){?>
 </div>
 </td>
 </tr>
-<?php }} ?>
+<?php }}else{ ?>
+    <tr><td colspan="8" class="text-center">No Record Found</td></tr>
+<?php } ?>
 </tbody>
 </table>
 </div>

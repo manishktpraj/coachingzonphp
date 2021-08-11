@@ -18,9 +18,9 @@ class InstituteCategory extends Migration
             $table->id("icat_id");
             $table->string('icat_name');
             $table->string('icat_slug');
-            $table->string('icat_parent');
-            $table->string('icat_description');
-            $table->string('icat_status');
+            $table->integer('icat_parent');
+            $table->string('icat_description')->nullable();
+            $table->integer('icat_status');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class InstituteCategory extends Migration
     public function down()
     {
         //
-        Schema::dropIfExists('cs_institute_category');
+      ////  Schema::dropIfExists('cs_institute_category');
     }
 }

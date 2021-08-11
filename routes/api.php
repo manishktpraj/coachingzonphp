@@ -31,5 +31,28 @@ Route::any('/login/updatestudentprofileimage', 'LoginController@updatestudentpro
 Route::any('/dashboard/getoffer', 'DashboardController@getoffer')->name('getoffer');
 Route::any('/dashboard/wallethistory', 'DashboardController@wallethistory')->name('wallethistory');
 Route::any('/dashboard/getbalance', 'DashboardController@getbalance')->name('getbalance');
+Route::any('/dashboard', 'DashboardController@index')->name('dashboarddata');
+
+
+Route::group(['prefix'=>'course'], function(){
+    Route::any('/subcategory', 'DataController@getpackagesubcategory')->name('getpackagesubcategory');
+});
+Route::group(['prefix'=>'user'], function(){
+    Route::any('/sharetextdata', 'DataController@sharetextdata')->name('sharetextdata');
+    Route::any('/notification', 'DataController@notification')->name('notification');
+    Route::any('/course', 'DataController@course')->name('course');
+    Route::any('/ebooknotes', 'DataController@ebooknotes')->name('ebooknotes');
+    Route::any('/getinstitutedetail', 'DataController@getinstitutedetail')->name('getinstitutedetail');
+    Route::any('/freestudymaterial', 'DataController@freestudymaterial')->name('freestudymaterial');
+    Route::any('/studymaterialcat', 'DataController@studymaterialcat')->name('studymaterialcat');
+    Route::any('/institutecategory', 'DataController@institutecategory')->name('institutecategory');
+    Route::any('/testseries', 'DataController@testseries')->name('testseries');
+    Route::any('/freetestseries', 'DataController@freetestseries')->name('freetestseries');
+
+    
+    
+    
+});
+
 
 ///Route::auto('/login', LoginController::class);

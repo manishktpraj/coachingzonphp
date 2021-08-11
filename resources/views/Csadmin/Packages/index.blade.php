@@ -36,17 +36,20 @@
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
 <th scope="col" style="text-align:center;width:50px;">S.No.</th>
 <th scope="col">Package Details</th>
-<th scope="col">Published By</th>
-<th scope="col">Price</th>
+<th scope="col" style="text-align:center;">Type</th>
+<?php if($user->staff_role==3){?>
+<th scope="col" style="text-align:center;">Published By</th>
+<?php } ?>
+<th scope="col" style="text-align:center;">Price</th>
 
 <th scope="col" style="text-align:center;">Order</th>
 <th scope="col">Status</th>
-<th scope="col">Date</th>
+<th scope="col" style="text-align:center" >Date</th>
 <th scope="col" style="text-align:center">Action</th>
 </tr>
 </thead>
 <tbody>
-    
+     
 <?php 
 //print_r($resPackageData);
 $i=1;if(count($resPackageData)>0){
@@ -56,15 +59,20 @@ foreach($resPackageData as $package){?>
 <th scope="row" style="text-align:center"><?php echo $i++;?></th>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar"><img src="<?php echo (isset($package->package_image) && $package->package_image!="")?SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE.$package->package_image:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar"><img src="<?php echo (isset($package->package_image) && $package->package_image!="")?SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE.$package->package_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt="" style="border:1px solid #ddd;"></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3" style=" white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis; width:300px"><a href="#"><?php echo $package->package_name;?></a></h6>
-<span class="d-block tx-13 tx-color-03"><?php echo $package->package_pc_name;?></span>
+<span class="d-block tx-12 tx-color-03"><?php echo $package->package_pc_name;?></span>
 </div>
 </div>
 </td>
-<th scope="col"></th>
-<td><p class="mg-b-3 tx-13 tx-color-03" style="text-decoration: line-through;">₹<?php echo $package->package_mrp;?></p>
+<td style="text-align:center"><span class="tx-13"><?php if(isset($package->package_type)&&$package->package_type==0){echo "Test Series";}elseif(isset($package->package_type)&&$package->package_type==1){echo "Video Classes";}elseif(isset($package->package_type)&&$package->package_type==2){echo "Test Series + Video Classes";}elseif(isset($package->package_type)&&$package->package_type==3){echo "Test Series + Video Classes + Study Material";}elseif(isset($package->package_type)&&$package->package_type==4){echo "Video Classes + Study Material";}?></span></td>
+
+<?php if($user->staff_role==3){?>
+<td style="text-align:center"><span class="tx-13"><?php echo isset($package->ins_name)?$package->ins_name:'Admin';?></span></td>
+<?php } ?>
+
+<td style="text-align:center"><p class="mg-b-3 tx-13 tx-color-03" style="text-decoration: line-through;">₹<?php echo $package->package_mrp;?></p>
 <span class="d-block tx-13 ">₹<?php echo $package->package_selling_price;?></span></td>
 
 <!--<td>₹<?php echo $package->package_selling_price;?></td>-->
@@ -75,7 +83,7 @@ foreach($resPackageData as $package){?>
     <?php }else{?>
     <a href="{{route('packageStatus',$package->package_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-danger">Inactive</span></a>
     <?php }?></td>
-<td><?php echo date("d M Y",strtotime($package->created_at));?></td>
+<td style="text-align:center"><?php echo date("d M Y",strtotime($package->created_at));?></td>
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">

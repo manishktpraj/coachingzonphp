@@ -71,34 +71,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Package Categories Listings</h6>
 </div>
 <div class="card-body">
-<form method="post" accept-charset="utf-8" id="bulkaction" class="form-horizontal" action="/codexo/project/dealzdxb/csadmin/product"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div><div class="row">
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-start mg-b-0">
-<div class="form-group mg-b-0">
-<select class="custom-select" name="bulkaction" id="bulkactionSelect">
-<option value="">Bulk Action</option> 
-<option value="1">Delete</option>
-<option value="2">Active</option>
-<option value="3">Inactive</option>
-</select>
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" id="bulkaction-button" class="btn btn-primary pd-x-20">Apply</button>
-</div>
-</div>
-</div>
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-end mg-b-0">
-<div class="form-group mg-b-0">
-<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="">
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>
-</div>
-</div>
-</div>
-</div> 
-</form>
+<?php echo $__env->make('Csadmin.bulkaction', ['status' => 'FILTER_PACKAGE_CATEGORY'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </div>
 <div class="table-responsive">
 <table class="table mg-b-0">

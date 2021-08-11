@@ -71,7 +71,7 @@ class InstituteCategoryController extends Controller
         $rowCategoryData =array();
         if($intid>0){
             $rowCategoryData = CsInstituteCategory::where('icat_id','=',$intid)->first();
-        }
+        } 
         //$resVideoData = CsInstituteCategory::paginate(20);
         // $resCategoryData = CsInstituteCategory::orderBy('icat_id', 'ASC')->get();
     $tree = $this->buildTree($resCategoryData);

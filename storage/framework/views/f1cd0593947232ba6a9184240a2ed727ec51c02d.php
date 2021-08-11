@@ -15,7 +15,7 @@
 <h4 class="mg-b-0 tx-spacing--1">Add New Institute</h4>
 </div>
 </div>
-<form method="post" action="<?php echo e(route('videoProccess')); ?>" enctype="multipart/form-data">
+<form method="post" action="<?php echo e(route('insProccess')); ?>" enctype="multipart/form-data">
 <?php echo csrf_field(); ?>
 <input type="hidden" name="ins_id" value="<?php echo isset($resInstituteData->ins_id)?$resInstituteData->ins_id:'0'?>">
 <div class="row row-xs">
@@ -45,12 +45,10 @@
 <div class="col-lg-4">
 <div class="form-group">
 <label>Password:</label>
-<input type="password" class="form-control" name="ins_password" required="" value="<?php echo isset($resInstituteData->ins_password)?$resInstituteData->ins_password:''?>">
+<input type="password" class="form-control" name="ins_password_" <?php echo ($intInsId==0)?'required':'';?> value="">
 </div>
 </div>
 </div>
-
-
 
 </div>
 </div>
@@ -59,7 +57,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">About</h6>
 </div>
 <div class="card-body" style="padding:0px;">
-<textarea name="ins_short_desc" class="ckeditor"><?php echo isset($resInstituteData->ins_short_desc)?$resInstituteData->ins_short_desc:''?></textarea>
+<textarea name="ins_desc" class="ckeditor"><?php echo isset($resInstituteData->ins_desc)?$resInstituteData->ins_desc:''?></textarea>
 </div>
 </div>
 
@@ -79,7 +77,13 @@
 <div class="col-lg-4">
 <div class="form-group">
 <label>State:</label>
-<input type="text" class="form-control" name="ins_state" required="" value="<?php echo isset($resInstituteData->ins_state)?$resInstituteData->ins_state:''?>">
+<select class="custom-select" name="ins_state" required>
+<option value="">Select State</option>
+<?php foreach($resStateData as $states){?>
+<option value="<?php echo $states->name;?>" <?php if(isset($resInstituteData->ins_state) && $resInstituteData->ins_state==$states->name){echo "selected";}?>><?php echo $states->name;?></option>
+<?php }?>
+</select>
+<!--<input type="text" class="form-control" name="ins_state" required="" value="<?php echo isset($resInstituteData->ins_state)?$resInstituteData->ins_state:''?>">-->
 </div>
 </div>
 <div class="col-lg-4">
@@ -116,7 +120,7 @@
 <p class="tx-color-03 tx-12">Select category in which you want to display this product. You can also select multiple categories for this product.</p>
 <div class="card" style="box-shadow:none">
 <div class="card-body" style="padding:15px; height: 250px;overflow-x: hidden;">
-<?php //echo $strCategoryTreeStructure?>
+<?php echo $strCategoryTreeStructure?>
 </div>
 </div>
 </div>
@@ -133,7 +137,7 @@
 <div class="form-group">
 <div class="media align-items-center">
 <div class="avatar" style="height:60px; width:60px
-"><img id="ins_logo" src="<?php echo (isset($resInstituteData->ins_logo) && $resInstituteData->ins_logo!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$resInstituteData->video_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
+"><img id="ins_logo" src="<?php echo (isset($resInstituteData->ins_logo) && $resInstituteData->ins_logo!="")?SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE.$resInstituteData->ins_logo:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <div class="custom-file">
 <input type="file" name="ins_logo_" class="custom-file-input" onchange="showPreview('ins_logo',this)" id="customFile">
@@ -154,7 +158,7 @@
 <div class="form-group">
 <div class="media align-items-center">
 <div class="avatar" style="height:60px; width:60px
-"><img id="ins_cover_image" src="<?php echo (isset($resInstituteData->ins_cover_image) && $resInstituteData->ins_cover_image!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$resInstituteData->video_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
+"><img id="ins_cover_image" src="<?php echo (isset($resInstituteData->ins_cover_image) && $resInstituteData->ins_cover_image!="")?SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE.$resInstituteData->ins_cover_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <div class="custom-file">
 <input type="file" name="ins_cover_image_" class="custom-file-input" onchange="showPreview('ins_cover_image',this)" id="customFile">

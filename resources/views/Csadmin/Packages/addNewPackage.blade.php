@@ -39,10 +39,12 @@
 <label>Package Type:</label>
 <select class="custom-select" name="package_type" required>
 <option value="">Select Type</option>
-<option value="0" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="0")?'selected':''?> >Test</option>
-<option value="1" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="1")?'selected':''?> >Video</option>
-<option value="2" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="2")?'selected':''?> >Test + Video</option>
-<option value="3" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="3")?'selected':''?> >Test + Video + Pdf</option>
+<option value="0" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="0")?'selected':''?> id="test">Test Series</option>
+<option value="1" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="1")?'selected':''?> id="video">Video Classes</option>
+<option value="2" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="2")?'selected':''?> id="testvideo">Test Series + Video Classes</option>
+<option value="3" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="3")?'selected':''?> id="testvideopdf">Test Series + Video Classes + Study Material</option>
+<option value="4" <?php  echo (isset($resPackageData->package_type) && $resPackageData->package_type=="4")?'selected':''?> id="testvideopdf">Video Classes + Study Material</option>
+
 </select>
 </div>
 </div> 
@@ -54,6 +56,9 @@
 </div>   
 
 </div>
+
+
+
 
 </div>
 </div>
@@ -81,14 +86,14 @@
 </div>
 <div class="col-lg-4">
 <div class="form-group">
-<label>Selling Price</label>
-<input type="number" class="form-control checkboxforvariant" name="package_selling_price" required onblur="setnormalnetprice($(this))" value="<?php echo isset($resPackageData->package_selling_price)?$resPackageData->package_selling_price:''; ?>" placeholder="Discount">
+<label>Discount</label>
+<input type="number" class="form-control checkboxforvariant" name="package_discount" onblur="setnormalnetprice($(this))" value="<?php echo isset($resPackageData->package_discount)?$resPackageData->package_discount:''; ?>" placeholder="Discount">
 </div>
 </div>
 <div class="col-lg-4">
 <div class="form-group">
-<label>Discount</label>
-<input type="number" class="form-control" readonly name="package_discount" value="<?php echo isset($resPackageData->package_discount)?$resPackageData->package_discount:''; ?>" placeholder="Net Price">
+<label>Selling Price</label>
+<input type="number" class="form-control" readonly name="package_selling_price" value="<?php echo isset($resPackageData->package_selling_price)?$resPackageData->package_selling_price:''; ?>" placeholder="Net Price">
 </div>
 </div>
 
@@ -120,9 +125,11 @@
 </div>
 </div>
 </div>
+<?php if(in_array('16',$delete_data) || in_array('16',$edit_data) || in_array('16',$view_data)){?>
 <div class="card-footer" style="padding: 0.75rem 1rem;">
 <a href="#">+ Add New Category</a>
 </div>
+<?php } ?>
 </div>
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
@@ -190,15 +197,17 @@
     CKEDITOR.config.allowedContent = true;
 }
 </script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 function setnormalnetprice(obj)
 {
-    var mrp = $('input[name=package_mrp]').val();
-    var discount = $('input[name=package_selling_price]').val();
     
-    $('input[name=package_discount]').val(mrp-discount);
-}
+    var mrp = $('input[name=package_mrp]').val();
+    var discount = $('input[name=package_discount]').val();
+    if(mrp!=''){
+    $('input[name=package_selling_price]').val(mrp-discount);
+}}
 </script>
 
 

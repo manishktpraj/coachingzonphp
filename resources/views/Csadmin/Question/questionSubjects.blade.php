@@ -58,36 +58,7 @@
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Subject Listings</h6>
 </div>
 <div class="card-body">
-<form method="post" action="{{route('bulkActionsSubject')}}" enctype="multipart/form-data">
-@csrf
-<div class="row">
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-start mg-b-0">
-<div class="form-group mg-b-0">
-<select class="custom-select" name="bulkaction" id="bulkactionSelect">
-<option value="">Bulk Action</option> 
-<option value="1">Delete</option>
-<option value="2">Active</option>
-<option value="3">Inactive</option>
-</select>
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" id="bulkaction-button" class="btn btn-primary pd-x-20">Apply</button>
-</div>
-</div>
-</div>
-<div class="col-lg-6">
-<div class="d-sm-flex justify-content-end mg-b-0">
-<div class="form-group mg-b-0">
-<input type="text" class="form-control wd-150" placeholder="" name="filter_keyword" value="">
-</div>
-<div class="mg-sm-l-10">
-<button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>
-</div>
-</div>
-</div>
-</div> 
-
+@include('Csadmin.bulkaction', ['status' => 'FILTER_SUBJECT_CATEGORY'])
 </div>
 <div class="table-responsive">
 <table class="table mg-b-0">
@@ -111,4 +82,4 @@
 </div>
 </div>
 </div>
-@endsection
+@endsection 

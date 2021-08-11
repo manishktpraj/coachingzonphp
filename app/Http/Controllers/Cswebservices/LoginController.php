@@ -180,7 +180,7 @@ return true;
         $a=0;
         while($a==0)
         {
-            $strCustomeId ='NEON'.rand(10000,100000);
+            $strCustomeId ='CZ'.rand(10000,100000);
             $rowSelectStudentSetting = CsStudent::where('student_registration_id','=',$strCustomeId)->count();
             if($rowSelectStudentSetting<=0)
             {
@@ -214,7 +214,7 @@ return true;
                     $rowUserInfo = new CsStudent;
                     $rowUserInfo->student_registration_id = self::getUserUniqueId();
                 }else{
-                    $rowUserInfo = CsStudent::where('student_email', '=', $rowUserInfo->student_id)->first();
+                    $rowUserInfo = CsStudent::where('student_email', '=', $rowUserInfo->student_email)->first();
                 }
                 
                 if($data->student_ref_id!='')
@@ -229,11 +229,12 @@ return true;
                     }
                 }
                 $rowUserInfo->student_first_name = $data->student_first_name;
-                $rowUserInfo->student_last_name = $data->student_last_name;
+              ////  $rowUserInfo->student_last_name = $data->student_last_name;
                 $rowUserInfo->student_email = $data->student_email;
                 $rowUserInfo->student_phone = $data->student_phone;
-                
-                $rowUserInfo->student_status = 1;
+                $rowUserInfo->student_password = $data->student_password;
+         
+                $rowUserInfo->student_status = 0;
                // $rowUserInfo = (array)$data;
                 $strRandomOtp =rand(1000,9999);
                 $rowUserInfo->student_otp = $strRandomOtp;
@@ -241,9 +242,9 @@ return true;
                 {
                     $rowUserInfo = CsStudent::where('student_phone', '=', $data->student_phone)->first();
                    // $rowUserInfo = $this->OtStudent->find('all')->where(' 1 AND  student_phone=\''.$data->student_phone.'\'')->first();
-                   // $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$strRandomOtp.' .DO NOT SHARE WITH ANYBODY.NEONCS';
-                   // SmsHelper::sendSms($data->student_phone,$strMessage);
-                    $aryResponse['message']='ok';
+                   $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$strRandomOtp;
+                   self::sendSms($data->student_phone,$strMessage);
+                   $aryResponse['message']='ok';
                     $aryResponse['notification']=' '.$strRandomOtp.' your otp';
                     $aryResponse['results'] = $rowUserInfo;
                 }else{

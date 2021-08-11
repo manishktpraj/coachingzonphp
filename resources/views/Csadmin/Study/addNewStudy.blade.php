@@ -71,10 +71,13 @@
 </div>
 </div>
 </div>
+<?php if(in_array('14',$delete_data) || in_array('14',$edit_data) || in_array('14',$view_data)){?>
 <div class="card-footer" style="padding: 0.75rem 1rem;">
 <a href="{{route('study-category')}}">+ Add New Category</a>
 </div>
+<?php } ?>
 </div>
+
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Featured Image</h6>
@@ -101,6 +104,9 @@
 </div>
 <div class="card-body">
 <div class="form-group">
+<?php if(isset($resStudyMaterialData->sm_file)&& $resStudyMaterialData->sm_file!=''){ ?>
+<a href="<?php echo SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE.$resStudyMaterialData->sm_file?>"><span style="display:none"><?php echo SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE;?></span><?php echo $resStudyMaterialData->sm_file;?></a>
+<?php } ?>
 <div class="media align-items-center">
 <div class="media-body">
 <div class="custom-file">
@@ -145,10 +151,9 @@
 <script>
     function checkValidation(obj)
     {
-         
         if($('.clsSelectSingle:checked').length==0)
         {
-            alert('Please select atleast one category.');
+         alert('Please select atleast one category.');
             return false;
         } 
     } 

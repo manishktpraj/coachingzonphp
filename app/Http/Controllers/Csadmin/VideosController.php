@@ -6,6 +6,8 @@ use Hash;
 use Session;
 use App\Http\Model\CsVcategory;
 use App\Http\Model\CsVideo;
+use App\Http\Model\CsPackageDetail;
+
 use Validator;
 use Illuminate\Support\Str;
 
@@ -13,7 +15,8 @@ class VideosController extends Controller
 {
   public function index(Request $request)
   {
-     
+    $user=Session::get("CS_ADMIN");
+
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -21,7 +24,7 @@ class VideosController extends Controller
         return redirect()->route('all-videos');   
         }
      /***********************Reset Filter Session ************/
-     
+       
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
@@ -59,25 +62,42 @@ class VideosController extends Controller
    
         if(session()->has('FILTER_VIDEO')){
         $strFilterKeyword = Session::get('FILTER_VIDEO');
-        $resVideoData = CsVideo::where('video_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-        //print_r($resVideoData);
+        if($user->role_type==0){
+            $resVideoData = CsVideo::where('video_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
         }else{
-        $resVideoData = CsVideo::paginate(20);
-        }    
-     
-      
+            $resVideoData = CsVideo::where('video_name', 'LIKE', "%{$strFilterKeyword}%")->where('video_institute','=',$user->user_id)->paginate(20);
+            }}else{
+                if($user->role_type==0){
+                    $resVideoData = CsVideo::leftJoin('cs_institute', function($join) {
+                        $join->on('cs_video.video_institute', '=', 'cs_institute.ins_id');
+                      })
+                      ->paginate();
+                }else{
+                    $resVideoData = CsVideo::leftJoin('cs_institute', function($join) {
+                        $join->on('cs_video.video_institute', '=', 'cs_institute.ins_id');
+                      })
+                      ->where('video_institute','=',$user->user_id)->paginate(20);
+    
+                }
+            }
     //$resVideoData = CsVideo::paginate(20);
     $resCategoryData = CsVcategory::get();
     $title='Videos';
-    return view('Csadmin.Videos.index',compact('title','resVideoData','resCategoryData'));
+    return view('Csadmin.Videos.index',compact('title','resVideoData','resCategoryData','user'));
   
   }
-    
+
    public function addNewVideo($intVideoId=0)
   {
+    $user=Session::get("CS_ADMIN");
        $resVideoData = array();
         if($intVideoId>0){
-            $resVideoData = CsVideo::where('video_id','=',$intVideoId)->first();
+            if($user->role_type==0){
+                $resVideoData = CsVideo::where('video_id','=',$intVideoId)->first();
+            }else{
+                $resVideoData = CsVideo::where('video_id','=',$intVideoId)->where('video_institute','=',$user->user_id)->first();
+    
+                }
         }
         $strCategory =array();
         if(isset($resVideoData->video_vc_id))
@@ -97,7 +117,9 @@ class VideosController extends Controller
   
   
    function videoProccess(Request $request)
-    {
+    {   
+         $user=Session::get("CS_ADMIN");
+
         $aryPostData = $request->all();
        // print_r($aryPostData);die;
         if(isset($aryPostData['video_id']) && $aryPostData['video_id']>0)
@@ -106,8 +128,9 @@ class VideosController extends Controller
         }else{
             $postobj = new CsVideo;
             $postobj->video_slug = Str::slug($aryPostData['video_name'], '-');
+            $postobj->video_institute=$user->user_id;
+
         }   
-        
         $postobj->video_status = 1;
         $postobj->video_name = $aryPostData['video_name'];
         $postobj->video_desc = $aryPostData['video_desc'];
@@ -138,6 +161,7 @@ class VideosController extends Controller
             $postobj->video_vc_name = '';
             $postobj->video_vc_id = '';
         }
+        
         if($request->hasFile('video_image_'))
         {
             $image = $request->file('video_image_');
@@ -163,7 +187,7 @@ class VideosController extends Controller
             return redirect()->route('all-videos')->with('error', 'Server Not Responed');
         }
     }
-    
+     
     public function videoStatus($intCategoryId)
     {
         $rowCategoryData = CsVideo::where('video_id',$intCategoryId)->first();
@@ -185,8 +209,62 @@ class VideosController extends Controller
   
   
   
-    public function videoCategory($intCategoryId=0)
+    public function videoCategory(Request $request,$intCategoryId=0)
     {
+         //echo $int;  
+     /***********************Reset Filter Session ************/
+     if($request->get('reset')==1)
+     {
+     Session::forget('FILTER_VIDEO_CATEGORY');
+     return redirect()->route('video-category');   
+     }
+  /***********************Reset Filter Session ************/
+  
+  /***********************Bulk Action ************/
+    $aryPostData = $request->all();
+    //print_r($aryPostData);
+    if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+       $aryPostData =$_POST;
+      $aryIds = explode(',',$aryPostData['bulkvalue']);
+     $intBulkAction = $aryPostData['bulkaction'];
+ 
+     if($intBulkAction==1)
+     {
+        CsVcategory::whereIn('vc_id', $aryIds)->delete();
+         return redirect()->route('video-category')->with('status', 'Entry Deleted Successfully');
+     }
+     if($intBulkAction==2)
+     {
+        CsVcategory::whereIn('vc_id', $aryIds)->update(['vc_status' => 1]);
+         return redirect()->route('video-category')->with('status', 'Entry Updated Successfully');
+     }
+     if($intBulkAction==3)
+     {
+        CsVcategory::whereIn('vc_id',$aryIds)->update(['vc_status' => 0]);
+         return redirect()->route('video-category')->with('status', 'Entry Updated Successfully');
+     }
+     endIf;
+   /***********************Bulk Action ************/
+  
+     
+        /***********************Apply Condition ************/
+
+        if($request->get('filter_keyword')!='')
+        {
+  
+        Session::put('FILTER_VIDEO_CATEGORY', $request->get('filter_keyword'));
+        Session::save(); 
+ 
+ 
+        }
+        /***********************Apply Condition ************/
+
+     if(session()->has('FILTER_VIDEO_CATEGORY')){
+     $strFilterKeyword = Session::get('FILTER_VIDEO_CATEGORY');
+     $resCategoryData = CsVcategory::where('vc_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+     }else{
+        $resCategoryData = CsVcategory::orderBy('vc_order', 'ASC')->get();
+     }    
         $intSelectParent =0;
         $rowCategoryData=array();
         if($intCategoryId>0)
@@ -194,7 +272,6 @@ class VideosController extends Controller
             $rowCategoryData = CsVcategory::where('vc_id',$intCategoryId)->first();
             $intSelectParent = $rowCategoryData->vc_parent;
         }
-        $resCategoryData = CsVcategory::orderBy('vc_order', 'ASC')->get();
         $tree = $this->buildTree($resCategoryData);
         $strCategoryHtml = $this->getCatgoryChildHtml($tree);
         $resChildCategory = CsVcategory::get();
@@ -284,8 +361,8 @@ class VideosController extends Controller
                             </td>';
                 $strHtml .='<td style="text-align:center">
                                 <div class="media align-items-center mg-b-0">
-                                    <div class="avatar" style="margin: 0 auto">
-                                        <img src="'.$src.'" class="rounded-circle" alt="">
+                                    <div class="avatar" style="margin: 0 auto;border:1px solid #ddd;">
+                                        <img src="'.$src.'" class="rounded" alt="">
                                     </div>
                                 </div>
                             </td>';  
@@ -299,7 +376,7 @@ class VideosController extends Controller
                 $orederData = CsVideo::where('video_vc_id','=',$label['vc_id'])->count();
                 
                 $strHtml .='<td style="text-align:center">'.$orederData.'</td>';
-                if($label['vc_id']==16)
+                if($label['vc_id']==32)
                 {                $strHtml .='<td colspan="1" style="text-align:center"></td>';
 }else
                 {
@@ -398,33 +475,12 @@ class VideosController extends Controller
     {   CsVcategory::where('vc_parent', $intCategoryId)->update(array('vc_parent' => 0));
 
         CsVcategory::where('vc_id', $intCategoryId)->delete();
+        CsPackageDetail::where('pkd_ref', $intCategoryId)->delete();
+
         return redirect()->route('video-category')->with('status', 'Entry Deleted Successfully');
     }
     
-    public function bulkActionVideoCat(Request $request)
-    {
-        $aryPostData = $request->all();
-        //print_r($aryPostData);die;
-        unset($aryPostData['_token']);
-        $aryPostData =$_POST;
-        $intBulkAction = $aryPostData['bulkaction'];
-        if($intBulkAction==1)
-        {
-            CsVcategory::whereIn('vc_id', $aryPostData['vc_id'])->delete();
-            return redirect()->route('video-category')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsVcategory::whereIn('vc_id', $aryPostData['vc_id'])->update(['vc_status' => 1]);
-            return redirect()->route('video-category')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsVcategory::whereIn('vc_id', $aryPostData['vc_id'])->update(['vc_status' => 0]);
-            return redirect()->route('video-category')->with('status', 'Entry Deleted Successfully');
-        }
-         
-    }
+   
     function genrateCatHtml($aryCategoryTree,$intLevel=0,$strSelectCategory=array()){
         $strHtml='';
         foreach($aryCategoryTree as $key=>$label){

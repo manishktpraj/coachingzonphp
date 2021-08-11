@@ -26,7 +26,7 @@
 <div class="d-flex tx-18">
 <a href="" class="link-03 lh-0"><i class="icon ion-md-refresh"></i></a>
 </div>
-</div>
+</div> 
 <div class="card-body">
 @include('Csadmin.bulkaction', ['status' => 'FILTER_FACULTY'])
 </div>
@@ -48,35 +48,40 @@
 $i=1;if(count($resfacultyData)>0){
 foreach($resfacultyData as $faculty){?>
 <tr>
-<td scope="row" style="text-align:center"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="faculty_id[]" value="<?php echo $faculty->faculty_id ?>"></th>
+<td scope="row" style="text-align:center"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="staff_id[]" value="<?php echo $faculty->staff_id ?>"></th>
 <td scope="row" style="text-align:center"><?php echo $i++;?></td>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar avatar-online"><img src="<?php echo (isset($faculty->faculty_img) && $faculty->faculty_img!="")?SITE_UPLOAD_URL.SITE_FACULTY_IMAGE.$faculty->faculty_img:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar avatar-online" ><img src="<?php echo (isset($faculty->staff_logo) && $faculty->staff_logo!="")?SITE_UPLOAD_URL.SITE_FACULTY_IMAGE.$faculty->staff_logo:SITE_NO_IMAGE_PATH;?>" class="rounded" alt="" style="border:1px solid #ddd;"></div>
 <div class="media-body pd-l-10">
-<h6 class="mg-b-3"><a href="#"><?php echo $faculty->faculty_first_name.$faculty->faculty_last_name ?></a></h6>
-<span class="d-block tx-13 tx-color-03"><?php echo $faculty->faculty_email?></span>
+<h6 class="mg-b-3"><a href="#"><?php echo $faculty->staff_name;?></a></h6>
+<span class="d-block tx-13 tx-color-03"><?php echo $faculty->staff_email?></span>
 </div>
 </div>
 </td>
-<td> <?php if($faculty->faculty_status==1){?>
-    <a href="{{route('facultyStatus',$faculty->faculty_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-success">Active</span></a>
+<td> <?php if($faculty->staff_status==1){?>
+    <a href="{{route('facultyStatus',$faculty->staff_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-success">Active</span></a>
     <?php }else{?>
-    <a href="{{route('facultyStatus',$faculty->faculty_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-danger">Inactive</span></a>
+    <a href="{{route('facultyStatus',$faculty->staff_id)}}" onclick="return confirm('Are you sure?')"><span class="badge badge-danger">Inactive</span></a>
     <?php }?></td>
 <td><span class="d-none d-sm-block tx-13 tx-color-03 align-self-start">5 hours ago</span></td>
 <td><?php echo date("d M Y",strtotime($faculty->created_at));?></td>
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
-<a href="{{route('view-faculty',$faculty->faculty_id )}}" class="btn btn-info btn-icon mg-r-5" title="View" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
-<a href="{{route('add-new-faculty',$faculty->faculty_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
-<a href="{{route('facultyDelete',$faculty->faculty_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
+<a href="{{route('view-faculty',$faculty->staff_id )}}" class="btn btn-info btn-icon mg-r-5" title="View" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"></i></a>
+<a href="{{route('add-new-faculty',$faculty->staff_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
+<a href="{{route('facultyDelete',$faculty->staff_id )}}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>
 </div>
 </td>
 </tr>
-<?php }} ?>
+<?php }}else{ ?>
+
+    <tr><td colspan="7" class="text-center">No Record Found</td></tr>
+
+
+    <?php } ?>
 </tbody>
 </table>
 </div>

@@ -13,6 +13,8 @@ class StudentsController extends Controller
 {
   public function index(Request $request)
   {
+    $user=Session::get("CS_ADMIN");
+
        /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -27,7 +29,7 @@ class StudentsController extends Controller
           $aryPostData =$_POST;
          $aryIds = explode(',',$aryPostData['bulkvalue']);
         $intBulkAction = $aryPostData['bulkaction'];
- 
+  
         if($intBulkAction==1)
         {
             CsStudent::whereIn('student_id', $aryIds)->delete();
@@ -58,13 +60,20 @@ class StudentsController extends Controller
    
         if(session()->has('FILTER_STUDENT')){
         $strFilterKeyword = Session::get('FILTER_STUDENT');
-        $resStudentData = CsStudent::where('student_first_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-        //print_r($resVideoData);
+        if($user->role_type==0){
+            $resStudentData = CsStudent::where('student_first_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
         }else{
+            $resStudentData = CsStudent::where('student_first_name', 'LIKE', "%{$strFilterKeyword}%")->where('student_ins_id','=',$user->user_id)->paginate(20);
+
+        //print_r($resVideoData);
+        }}else{
+            if($user->role_type==0){
          $resStudentData = CsStudent::paginate(20);
+            }else{
+          $resStudentData = CsStudent::where('student_ins_id','=',$user->user_id)->paginate(20);
         }    
      
-      
+    }
    
 
     $title='Students';
@@ -87,11 +96,14 @@ class StudentsController extends Controller
    function studentProccess(Request $request)
     {
         $aryPostData = $request->all();
+        
         if(isset($aryPostData['student_id']) && $aryPostData['student_id']>0)
         {
             $postobj = CsStudent::where('student_id',$aryPostData['student_id'])->first();
         }else{
             $postobj = new CsStudent;
+            $postobj->student_ins_id = $aryPostData['student_ins_id'];
+
         }   
         
         $postobj->student_status = 1;
@@ -101,6 +113,7 @@ class StudentsController extends Controller
         $postobj->student_dob = $aryPostData['student_dob'];
         $postobj->student_email = $aryPostData['student_email'];
         $postobj->studentg_name = $aryPostData['studentg_name'];
+
         
        if(isset($aryPostData['student_new_password']) && isset($aryPostData['student_confirm_password']) && $aryPostData['student_confirm_password']==$aryPostData['student_new_password']){
                
@@ -110,7 +123,7 @@ class StudentsController extends Controller
         $postobj->student_phone = $aryPostData['student_phone'];
         
 
-        $postobj->student_registration_id = 'NEON'.rand(10000,100000);
+        $postobj->student_registration_id = 'CZ'.rand(10000,100000);
 
 
         
@@ -123,7 +136,10 @@ class StudentsController extends Controller
     }
     
     public function addNewStudent($intstudentId=0)
-  {
+  { 
+    $user=Session::get("CS_ADMIN");
+
+$ins_id=$user->user_id;
        $resStudentData = array();
         if($intstudentId>0){
             $resStudentData = CsStudent::where('student_id','=',$intstudentId)->first();
@@ -131,12 +147,70 @@ class StudentsController extends Controller
         $resStudentgroupData = CsStudentGroup::get();
         
     $title='Add New Student';
-    return view('Csadmin.Students.addNewStudent' ,compact('title','resStudentData','resStudentgroupData'));
+    return view('Csadmin.Students.addNewStudent' ,compact('title','resStudentData','resStudentgroupData','ins_id'));
   }
   
 
-  public function studentGroup($intCategoryId=0)
+  public function studentGroup(Request $request,$intCategoryId=0)
   {
+    $user=Session::get("CS_ADMIN");
+     
+    //print_r($user);
+     /***********************Reset Filter Session ************/
+        if($request->get('reset')==1)
+        {
+        Session::forget('FILTER_GROUP');
+        return redirect()->route('student-group');   
+        }
+     /***********************Reset Filter Session ************/
+       
+     /***********************Bulk Action ************/
+       $aryPostData = $request->all();
+       if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+          $aryPostData =$_POST;
+         $aryIds = explode(',',$aryPostData['bulkvalue']);
+        $intBulkAction = $aryPostData['bulkaction'];
+ 
+        if($intBulkAction==1)
+        {
+            CsStudentGroup::whereIn('sg_id', $aryIds)->delete();
+            return redirect()->route('student-group')->with('status', 'Entry Deleted Successfully');
+        }
+        if($intBulkAction==2)
+        {
+            CsStudentGroup::whereIn('sg_id', $aryIds)->update(['sg_status' => 1]);
+            return redirect()->route('student-group')->with('status', 'Entry Updated Successfully');
+        }
+        if($intBulkAction==3)
+        {
+            CsStudentGroup::whereIn('sg_id',$aryIds)->update(['sg_status' => 0]);
+            return redirect()->route('student-group')->with('status', 'Entry Updated Successfully');
+        }
+        endIf;
+      /***********************Bulk Action ************/
+     
+        
+           /***********************Apply Condition ************/
+   
+        if($request->get('filter_keyword')!='')
+        {
+        Session::put('FILTER_GROUP', $request->get('filter_keyword'));
+        Session::save(); 
+        }
+           /***********************Apply Condition ************/
+   
+           if(session()->has('FILTER_GROUP')){
+            $strFilterKeyword = Session::get('FILTER_TEST_CATEGORY');
+            $resCategoryData = CsStudentGroup::where('sg_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+            }else{
+                $resCategoryData = CsStudentGroup::orderBy('sg_order', 'ASC')->get();
+            }    
+    
+            $intSelectParent=0;
+
+
+
+
       $rowCategoryData=array();
         if($intCategoryId>0)
         {

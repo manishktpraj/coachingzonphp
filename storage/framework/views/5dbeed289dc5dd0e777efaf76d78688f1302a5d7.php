@@ -35,11 +35,14 @@
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
 <th scope="col" style="text-align:center;width:50px;">S.No.</th>
 <th scope="col">Study Materials Details</th>
-<th scope="col">Type</th>
+<?php if($user->staff_role==3){?>
+<th scope="col" style="text-align:center;">Published By</th>
+<?php } ?>
+<!-- <th scope="col">Type</th> -->
 <th scope="col">Status</th>
-<th scope="col">Date</th>
+<th scope="col">Published Date</th>
 <th scope="col" style="text-align:center">Action</th>
-</tr>
+</tr> 
 </thead>
 <tbody>
 <?php if(count($resStudyMaterialData)>0){
@@ -50,14 +53,17 @@ foreach($resStudyMaterialData as $value){?>
 <th scope="row" style="text-align:center"><?php echo $i++;?></th>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar"><img src="<?php echo (isset($value->sm_image) && $value->sm_image!="")?SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE.$value->sm_image:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar"><img src="<?php echo (isset($value->sm_image) && $value->sm_image!="")?SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE.$value->sm_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt="" style="border:1px solid #ddd;"></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3"><a href="#"><?php echo $value->sm_name?></a></h6>
 <span class="d-block tx-13 tx-color-03"><?php echo $value->sm_sc_name?></span>
 </div>
 </div>
 </td>
-<td><?php echo (isset($value->sm_type) && $value->sm_type=="0")?'Free':'Paid'?></td>
+<?php if($user->staff_role==3){?>
+<td style="text-align:center;"><span class="tx-13"><?php echo isset($value->ins_name)?$value->ins_name:'Admin';?></span></td>
+<?php } ?>
+<!-- <td><?php echo (isset($value->sm_type) && $value->sm_type=="0")?'Free':'Paid'?></td> -->
 <td>
     <?php if($value->sm_status==0){?>
     <a href="<?php echo e(route('studyMaterialStatus',$value->sm_id)); ?>"><span class="badge badge-danger">Inactive</span></a>
@@ -77,7 +83,7 @@ foreach($resStudyMaterialData as $value){?>
 </td>
 </tr>
 <?php }}else{ ?>
-<tr><td colspan="6" class="text-center">No Record Found</td></tr>
+<tr><td colspan="8" class="text-center">No Record Found</td></tr>
 <?php }?>
 </tbody>
 </table>

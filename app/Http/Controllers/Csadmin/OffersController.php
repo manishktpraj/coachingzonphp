@@ -12,8 +12,9 @@ use Validator;
 class OffersController extends Controller
 {
   public function index(Request $request)
-  {
-      
+  { 
+    $user=Session::get("CS_ADMIN");
+ 
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -59,31 +60,44 @@ class OffersController extends Controller
    
         if(session()->has('FILTER_OFFER')){
         $strFilterKeyword = Session::get('FILTER_OFFER');
-        $resOfferLists = Csoffers::where('coupon_code', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-        //print_r($resVideoData);
+        if($user->role_type==0){
+          $resOfferLists = Csoffers::where('coupon_code', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
         }else{
-      $resOfferLists = Csoffers::paginate(15);
-        }    
-     
-        
-     
-      
-      
-      
-      
-      
-      
+          $resOfferLists = Csoffers::where('coupon_code', 'LIKE', "%{$strFilterKeyword}%")->where('offer_institute','=',$user->user_id)->paginate(20);
+          }}else{
+              if($user->role_type==0){
+                $resOfferLists = Csoffers::leftJoin('cs_institute', function($join) {
+                  $join->on('cs_offers.offer_institute', '=', 'cs_institute.ins_id');
+                })
+                ->paginate();;
+              }else{
+                $resOfferLists = Csoffers::leftJoin('cs_institute', function($join) {
+                  $join->on('cs_offers.offer_institute', '=', 'cs_institute.ins_id');
+                })
+                ->where('offer_institute','=',$user->user_id)->paginate(20);
+  
+              }
+          }    
+            
     $title='Offers';
-    return view('Csadmin.Offers.index',compact('title','resOfferLists'));
+    return view('Csadmin.Offers.index',compact('title','resOfferLists','user'));
   }
+  
     //************************************ Offers Add and update Function *********************************************// 
   
   public function alloffersShow($intid=0)
   {
-    
+    $user=Session::get("CS_ADMIN");
+
        $resOfferData = array();
         if($intid>0){
+
+          if($user->role_type==0){
             $resOfferData = Csoffers::where('offers_id','=',$intid)->first();
+        }else{
+          $resOfferData = Csoffers::where('offers_id','=',$intid)->where('offer_institute','=',$user->user_id)->first();
+
+            }
         }
         
         
@@ -97,16 +111,22 @@ class OffersController extends Controller
   
     public function offerprocessrequest(Request $request)
     {
+      $user=Session::get("CS_ADMIN");
+      $a=$user->user_id;
+     // print_r($user);die;
         $aryPostData = $request->all();
         if(isset($aryPostData['offers_id'])  &&  $aryPostData['offers_id']>0)
         {
             $data = Csoffers::where('offers_id','=',$aryPostData['offers_id'])->first();   
         }else{
             $data = new Csoffers();   
+            $data->offer_institute= $a;
+
         }
        // echo "<pre>";
-        //print_r($aryPostData);die;
-        //$data = new Csoffers();         
+        //echo $a;die;
+        //$data = new Csoffers();  
+       
         $data->offers_name = $request['offers_name'];
         $data->coupon_code = $request['coupon_code'];
         $data->offers_valid_from = $request['offers_valid_from'];
@@ -150,7 +170,7 @@ class OffersController extends Controller
         Csoffers::where('offers_id', $offers_id)->delete();
         return redirect()->route('offers-promos')->with('status', 'Entry Deleted Successfully');
     }
-
+ 
   //************************************ Shikha *********************************************// 
 
 }

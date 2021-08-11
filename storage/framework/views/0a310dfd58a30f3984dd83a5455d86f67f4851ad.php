@@ -38,15 +38,19 @@
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
 <th scope="col" style="text-align:center;width:50px;">S.No.</th>
 <th scope="col">Test Details</th>
+<?php if($user->staff_role==3){?>
+<th scope="col" style="text-align:center;">Published By</th>
+<?php } ?>
 <th scope="col">Type</th>
 <th scope="col">Status</th>
-<th scope="col">Date</th>
+<th scope="col">Published Date</th>
 <th scope="col" style="text-align:center">Action</th>
 </tr>
 </thead>
 <tbody>
 <?php 
 $i=1;if(count($resTestData)>0){
+ //print_r($resTestData);
 foreach($resTestData as $test)
 {
     //$resData = $resCategoryData::where
@@ -56,21 +60,23 @@ foreach($resTestData as $test)
 <th scope="row" style="text-align:center"><?php echo $i++;?></th>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar"><img src="<?php echo (isset($test->test_image) && $test->test_image!="")?SITE_UPLOAD_URL.SITE_TEST_IMAGE.$test->test_image:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar" style="border:1px solid #ddd;"><img src="<?php echo (isset($test->test_image) && $test->test_image!="")?SITE_UPLOAD_URL.SITE_TEST_IMAGE.$test->test_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3"  style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;width: 200px;"><a href="#"><?php echo $test->test_name;?></a></h6>
 <span class="d-block tx-13 tx-color-03"><?php echo $test->test_tc_name?></span>
 </div>
 </div>
 </td>
-<td><?php if($test->test_subject==0){echo "Live";}elseif($test->test_subject==1){echo "Recorded";}else{echo "Demo";}?></td>
+<?php if($user->staff_role==3){?>
+<td style="text-align:center;"><span class="tx-13"><?php echo isset($test->ins_name)?$test->ins_name:'Admin';?></span></td>
+<?php } ?>
+<td><?php echo $test->test_subject;?></td>
 <td>
     <?php if($test->test_status==1){?>
     <a href="<?php echo e(route('testStatus',$test->test_id)); ?>"><span class="badge badge-success">Active</span></a>
     <?php }else{?>
     <a href="<?php echo e(route('testStatus',$test->test_id)); ?>"><span class="badge badge-danger">Inactive</span></a>
     <?php }?>
-    
 </td>
 <td><?php echo date("d M Y",strtotime($test->created_at));?></td>
 <td>
@@ -83,7 +89,7 @@ foreach($resTestData as $test)
 </td>
 </tr>    
 <?php }}else{ ?>
-<tr><td colspan="7" class="text-center">No Record Found</td></tr>
+<tr><td colspan="8" class="text-center">No Record Found</td></tr>
 <?php } ?>    
 </tbody>
 </table>

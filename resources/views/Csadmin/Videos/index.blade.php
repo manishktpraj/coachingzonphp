@@ -18,6 +18,7 @@
 <a href="#" class="btn btn-sm pd-x-15 btn-white btn-uppercase"><i data-feather="file" class="wd-10 mg-r-5"></i>Export</a>
 <a href="{{route('add-new-video')}}" class="btn btn-sm pd-x-15 btn-primary btn-uppercase  mg-l-5"><i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Video</a>
 </div>
+
 </div>
 <div class="row row-xs">
 <div class="col-lg-12">
@@ -40,6 +41,9 @@
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
 <th scope="col" style="text-align:center;width:50px;">S.No.</th>
 <th scope="col">Video Details</th>
+<?php if($user->staff_role==3){?>
+<th scope="col" style="text-align:center;">Published By</th>
+<?php } ?>
 <th scope="col">Type</th>
 <th scope="col">Status</th>
 <th scope="col">Date</th>
@@ -58,13 +62,16 @@ foreach($resVideoData as $video)
 <th scope="row" style="text-align:center"><?php echo $i++;?></th>
 <td>
 <div class="media align-items-center mg-b-0">
-<div class="avatar"><img src="<?php echo (isset($video->video_image) && $video->video_image!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->video_image:SITE_NO_IMAGE_PATH;?>" class="rounded-circle" alt=""></div>
+<div class="avatar" style="border:1px solid #ddd;"><img src="<?php echo (isset($video->video_image) && $video->video_image!="")?SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->video_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt=""></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3"  style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;width: 200px;"><a href="<?php echo(isset($video->video_file) && $video->video_file!="")? SITE_UPLOAD_URL.SITE_VIDEO_IMAGE.$video->video_file:'' ?>" <?php if(isset($video->video_file) && $video->video_file!=""){echo "target='_blank'";}?> ><?php echo $video->video_name;?></a></h6>
 <span class="d-block tx-13 tx-color-03"><?php echo $video->video_vc_name?></span>
 </div>
-</div>
+</div> 
 </td>
+<?php if($user->staff_role==3){?>
+<td style="text-align:center;"><span class="tx-13"><?php echo isset($video->ins_name)?$video->ins_name:'Admin';?></span></td>
+<?php } ?>
 <td><?php if($video->video_type==0){echo "Live";}elseif($video->video_type==1){echo "Recorded";}else{echo "Demo";}?></td>
 <td>
     <?php if($video->video_status==1){?>
@@ -75,7 +82,7 @@ foreach($resVideoData as $video)
     
 </td>
 <td><?php echo date("d M Y",strtotime($video->created_at));?></td>
-<td>
+<td style="width:105px;">
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
 <a href="{{route('add-new-video',$video->video_id )}}" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
@@ -85,7 +92,7 @@ foreach($resVideoData as $video)
 </td>
 </tr>    
 <?php }}else{ ?>
-<tr><td colspan="7" class="text-center">No Record Found</td></tr>
+<tr><td colspan="8" class="text-center">No Record Found</td></tr>
 <?php } ?>    
 </tbody>
 </table>

@@ -6,17 +6,21 @@ use Hash;
 use Session;
 use App\Http\Model\Csdmin;
 use App\Http\Model\CsTcategory;
+use App\Http\Model\CsSubject;
+
 use App\Http\Model\CsTest;
 use Illuminate\Support\Str;
-
 use Validator;
 
 class TestsController extends Controller
 {
   public function index(Request $request)
   {
-    
+    $user=Session::get("CS_ADMIN");
      
+    //print_r($user);
+
+   echo  $user->staff_name;
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -24,7 +28,7 @@ class TestsController extends Controller
         return redirect()->route('tests');   
         }
      /***********************Reset Filter Session ************/
-     
+       
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
@@ -62,24 +66,48 @@ class TestsController extends Controller
    
         if(session()->has('FILTER_TEST')){
         $strFilterKeyword = Session::get('FILTER_TEST');
+        if($user->role_type==0){
         $resTestData = CsTest::where('test_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
         }else{
-        $resTestData = CsTest::paginate(20);
+        $resTestData = CsTest::where('test_name', 'LIKE', "%{$strFilterKeyword}%")->where('test_institute','=',$user->user_id)->paginate(20);
+        }}else{
+            if($user->role_type==0){
+        $resTestData = CsTest::leftJoin('cs_institute', function($join) {
+            $join->on('cs_institute.ins_id', '=', 'cs_test.test_institute');
+          })
+          ->paginate();
+            }else{
+                $resTestData = CsTest::leftJoin('cs_institute', function($join) {
+                    $join->on('cs_test.test_institute', '=', 'cs_institute.ins_id');
+                  })
+                  ->where('test_institute','=',$user->user_id)
+                  ->paginate(20);
+
+            }
         }    
     
-    
-    
+    //print_r($resTestData);
     $resCategoryData = CsTcategory::get();
     $title='Tests';
-    return view('Csadmin.Tests.index',compact('title','resTestData','resCategoryData'));
+    return view('Csadmin.Tests.index',compact('title','resTestData','resCategoryData','user'));
   }
   
   
    public function addNewTest($intTestId=0)
   {
+    $user=Session::get("CS_ADMIN");
+
        $resTestData = array();
         if($intTestId>0){
-            $resTestData = CsTest::where('test_id','=',$intTestId)->first();
+
+            if($user->role_type==0){
+                $resTestData = CsTest::where('test_id','=',$intTestId)->first();
+            }else{
+                $resTestData = CsTest::where('test_id','=',$intTestId)->where('test_institute','=',$user->user_id)->first();
+    
+                }
+
+
         }
         $strCategory =array();
         if(isset($resTestData->test_tc_id))
@@ -91,8 +119,9 @@ class TestsController extends Controller
       $aryCategoryList = $this->buildTree($resCategoryData,0);
       $strCategoryTreeStructure =$this->genrateHtml($aryCategoryList,0,$strCategory);
 
+      $sub = CsSubject::get();
     $title='Add New Test';
-    return view('Csadmin.Tests.addNewTest' ,compact('title','resCategoryData','aryCategoryList','strCategoryTreeStructure','strCategory','resTestData'));
+    return view('Csadmin.Tests.addNewTest' ,compact('title','resCategoryData','aryCategoryList','strCategoryTreeStructure','strCategory','resTestData','sub'));
   }
   
    public function testStatus($intCategoryId)
@@ -109,7 +138,8 @@ class TestsController extends Controller
     }
     
    function testProccess(Request $request)
-    {
+    {   $user=Session::get("CS_ADMIN");
+
         $aryPostData = $request->all();
         //print_r($aryPostData);die;
         if(isset($aryPostData['test_id']) && $aryPostData['test_id']>0)
@@ -119,8 +149,13 @@ class TestsController extends Controller
         }else{
             $postobj = new CsTest;
             $postobj->test_slug = Str::slug($aryPostData['test_name'], '-');
+            $postobj->test_institute = $user->user_id;
+            $postobj->test_institute_name = $user->staff_name;
+           
+
         }   
         
+
         $postobj->test_status = 1;
         $postobj->test_name = $aryPostData['test_name'];
         $postobj->test_desc = $aryPostData['test_desc'];
@@ -170,8 +205,61 @@ class TestsController extends Controller
         }
     }
     
- public function testCategory($intCategoryId=0)
-    {
+ public function testCategory(Request $request,$intCategoryId=0)
+    {/***********************Reset Filter Session ************/
+        if($request->get('reset')==1)
+        {
+        Session::forget('FILTER_TEST_CATEGORY');
+        return redirect()->route('test-category');   
+        }
+     /***********************Reset Filter Session ************/
+     
+     /***********************Bulk Action ************/
+       $aryPostData = $request->all();
+       //print_r($aryPostData);
+       if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+          $aryPostData =$_POST;
+         $aryIds = explode(',',$aryPostData['bulkvalue']);
+        $intBulkAction = $aryPostData['bulkaction'];
+    
+        if($intBulkAction==1)
+        {
+           CsTcategory::whereIn('tc_id', $aryIds)->delete();
+            return redirect()->route('test-category')->with('status', 'Entry Deleted Successfully');
+        }
+        if($intBulkAction==2)
+        {
+           CsTcategory::whereIn('tc_id', $aryIds)->update(['tc_status' => 1]);
+            return redirect()->route('test-category')->with('status', 'Entry Updated Successfully');
+        }
+        if($intBulkAction==3)
+        {
+           CsTcategory::whereIn('tc_id',$aryIds)->update(['tc_status' => 0]);
+            return redirect()->route('test-category')->with('status', 'Entry Updated Successfully');
+        }
+        endIf;
+      /***********************Bulk Action ************/
+     
+        
+           /***********************Apply Condition ************/
+   
+           if($request->get('filter_keyword')!='')
+           {
+     
+           Session::put('FILTER_TEST_CATEGORY', $request->get('filter_keyword'));
+           Session::save(); 
+    
+    
+           }
+           /***********************Apply Condition ************/
+   
+        if(session()->has('FILTER_TEST_CATEGORY')){
+        $strFilterKeyword = Session::get('FILTER_TEST_CATEGORY');
+        $resCategoryData = CsTcategory::where('tc_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
+        }else{
+            $resCategoryData = CsTcategory::orderBy('tc_order', 'ASC')->get();
+        }    
+
         $intSelectParent=0;
         $rowCategoryData=array();
         if($intCategoryId>0)
@@ -180,25 +268,15 @@ class TestsController extends Controller
             $intSelectParent = $rowCategoryData->tc_parent;
 
         }
-        $resCategoryData = CsTcategory::orderBy('tc_order', 'ASC')->get();
-        //print_r($resCategoryData);
         $tree = $this->buildTree($resCategoryData);
-        //print_r($tree);
         $strCategoryHtml = $this->getCatgoryChildHtml($tree);
-        
-        $resChildCategory = CsTcategory::get();
-        
-        //$intSelectParent = CsTcategory::select('tc_parent')->get();
-        
+                   
         $resCategoryListData =CsTcategory::get();
         $tree = $this->buildTree($resCategoryListData);
-
         $strEntryHtml = $this->getCatgoryEntryChildHtml($tree,'',0,$intSelectParent);
-       // print_r($strEntryHtml);die;
-
-        
+       
         $title='Test Category';
-        return view('Csadmin.Tests.testCategory',compact('title','resCategoryData','rowCategoryData','strCategoryHtml','resChildCategory','strEntryHtml'));
+        return view('Csadmin.Tests.testCategory',compact('title','resCategoryData','rowCategoryData','strCategoryHtml','strEntryHtml'));
     }
     
     function buildTree($elements, $parentId = 0) 
@@ -267,8 +345,8 @@ class TestsController extends Controller
                                 <td scope="row" style="text-align:center;vertical-align: middle;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="tc_id[]" value="'.$label['tc_id'].'"></td>';
                 $strHtml .='<td style="text-align:center">
                                 <div class="media align-items-center mg-b-0">
-                                    <div class="avatar" style="margin:0 auto">
-                                        <img src="'.$src.'" class="rounded-circle" alt="" accept="image/*">
+                                    <div class="avatar" style="margin:0 auto;border:1px solid #ddd;">
+                                        <img src="'.$src.'" class="rounded" alt="" accept="image/*">
                                     </div>
                                 </div>
                             </td>';  
@@ -390,36 +468,7 @@ public function changeStatusTCategory($intCategoryId)
         return redirect()->route('test-category')->with('status', 'Entry Deleted Successfully');
     }
 
-
- 
-
- public function bulkActionTestCat(Request $request)
-    {
-        $aryPostData = $request->all();
-        //print_r($aryPostData);die;
-        unset($aryPostData['_token']);
-        $aryPostData =$_POST;
-        $intBulkAction = $aryPostData['bulkaction'];
-        if($intBulkAction==1)
-        {
-            CsTcategory::whereIn('tc_id', $aryPostData['tc_id'])->delete();
-            return redirect()->route('test-category')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsTcategory::whereIn('tc_id', $aryPostData['tc_id'])->update(['tc_status' => 1]);
-            return redirect()->route('test-category')->with('status', 'Entry Updated Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsTcategory::whereIn('tc_id', $aryPostData['tc_id'])->update(['tc_status' => 0]);
-            return redirect()->route('test-category')->with('status', 'Entry Updated Successfully');
-        }
-         
-    }
-
-
- function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
+    function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
   {
      //echo $intSelectParent; die;
      $strHtml=$strExtraHtml;
