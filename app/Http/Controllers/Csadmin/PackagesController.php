@@ -15,64 +15,55 @@ use App\Http\Model\CsVideo;
 use App\Http\Model\CsTest;
 use App\Http\Model\CsTcategory;
 use App\Http\Model\CsScategory;
-
-
 use App\Http\Model\CsStudyMaterial;
-
-
 use Illuminate\Support\Str;
 use Validator;
 
 class PackagesController extends Controller
 {
-
-  public function index(Request $request)
-  {
-    $user=Session::get("CS_ADMIN");
-   //print_r($user);
-      
-     /***********************Reset Filter Session ************/
+    public function index(Request $request)
+    {
+        $user = Session::get("CS_ADMIN");
+        /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
-        Session::forget('FILTER_PACKAGE');
-        return redirect()->route('all-packages');   
+            Session::forget('FILTER_PACKAGE');
+            return redirect()->route('all-packages');   
         }
-     /***********************Reset Filter Session ************/
+        /***********************Reset Filter Session ************/
      
-     /***********************Bulk Action ************/
-       $aryPostData = $request->all();
-       if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
-          $aryPostData =$_POST;
-         $aryIds = explode(',',$aryPostData['bulkvalue']);
-        $intBulkAction = $aryPostData['bulkaction'];
- 
-        if($intBulkAction==1)
-        {
-            CsPackage::whereIn('package_id', $aryIds)->delete();
-            return redirect()->route('all-packages')->with('status', 'Entry Deleted Successfully');
-        }
-        if($intBulkAction==2)
-        {
-            CsPackage::whereIn('package_id', $aryIds)->update(['package_status' => 1]);
-            return redirect()->route('all-packages')->with('status', 'Entry Updated Successfully');
-        }
-        if($intBulkAction==3)
-        {
-            CsPackage::whereIn('package_id',$aryIds)->update(['package_status' => 0]);
-            return redirect()->route('all-packages')->with('status', 'Entry Updated Successfully');
-        }
+        /***********************Bulk Action ************/
+        $aryPostData = $request->all();
+        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
+            $aryPostData =$_POST;
+            $aryIds = explode(',',$aryPostData['bulkvalue']);
+            $intBulkAction = $aryPostData['bulkaction'];
+            if($intBulkAction==1)
+            {
+                CsPackage::whereIn('package_id', $aryIds)->delete();
+                return redirect()->route('all-packages')->with('status', 'Entry Deleted Successfully');
+            }
+            if($intBulkAction==2)
+            {
+                CsPackage::whereIn('package_id', $aryIds)->update(['package_status' => 1]);
+                return redirect()->route('all-packages')->with('status', 'Entry Updated Successfully');
+            }
+            if($intBulkAction==3)
+            {
+                CsPackage::whereIn('package_id',$aryIds)->update(['package_status' => 0]);
+                return redirect()->route('all-packages')->with('status', 'Entry Updated Successfully');
+            }
         endIf;
-      /***********************Bulk Action ************/
+        /***********************Bulk Action ************/
      
-        
-           /***********************Apply Condition ************/
+        /***********************Apply Condition ************/
    
         if($request->get('filter_keyword')!='')
         {
-        Session::put('FILTER_PACKAGE', $request->get('filter_keyword'));
-        Session::save(); 
+            Session::put('FILTER_PACKAGE', $request->get('filter_keyword'));
+            Session::save(); 
         }
-           /***********************Apply Condition ************/
+        /***********************Apply Condition ************/
    
         if(session()->has('FILTER_PACKAGE')){
         $strFilterKeyword = Session::get('FILTER_PACKAGE');
@@ -93,7 +84,8 @@ class PackagesController extends Controller
             $join->on('cs_package.pacakge_ins_id', '=', 'cs_institute.ins_id');
           })
           ->where('pacakge_ins_id','=',$user->user_id)->paginate(20);
-  }}    
+        }
+    }    
      //print_r($resPackageData);
     $resCategoryData = CsPcategory::get(); 
     $title='Packages';
@@ -380,7 +372,7 @@ public function categoryPackage(Request $request,$intCategoryId=0)
                 $strHtml .='<td style="text-align:center">'.$orederData.'</td>';
                 if($label['pc_id']==-1)
                 {               $strHtml .='<td colspan="1" style="text-align:center"></td>';
-}else
+                    }else
                 {
                 $strHtml .='<td>
                                 <div class="d-flex align-self-center justify-content-center">
@@ -421,7 +413,6 @@ public function categoryPackage(Request $request,$intCategoryId=0)
     function packageCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['pc_id']) && $aryPostData['pc_id']>0)
         {
             $postobj = CsPcategory::where('pc_id',$aryPostData['pc_id'])->first();
@@ -430,7 +421,6 @@ public function categoryPackage(Request $request,$intCategoryId=0)
             $postobj->pc_slug = Str::slug($aryPostData['pc_name'], '-');
         }   
         if($aryPostData['pc_order']==''){
-            
           $max=CsPcategory::max('pc_order');
           $postobj->pc_order = $max+1;
             
@@ -440,7 +430,6 @@ public function categoryPackage(Request $request,$intCategoryId=0)
         }
         $postobj->pc_status = 1;
         $postobj->pc_name = $aryPostData['pc_name'];
-        //$postobj->pc_order = $aryPostData['pc_order'];
         $postobj->pc_parent = $aryPostData['pc_parent'];
         if($request->hasFile('pc_image_'))
         {
@@ -459,7 +448,7 @@ public function categoryPackage(Request $request,$intCategoryId=0)
         }
     }
 
-public function changeStatusPCategory($intCategoryId)
+    public function changeStatusPCategory($intCategoryId)
     {
         $rowCategoryData = CsPcategory::where('pc_id',$intCategoryId)->first();
         if($rowCategoryData->pc_status==0){
@@ -471,110 +460,92 @@ public function changeStatusPCategory($intCategoryId)
         return redirect()->route('package-category')->with('status', 'Entry Edited Successfully');
     }
     
- public function deletepcategory($intCategoryId)
-    {   CsPcategory::where('pc_parent', $intCategoryId)->update(array('pc_parent' => 0));
-
+    public function deletepcategory($intCategoryId)
+    {   
+        CsPcategory::where('pc_parent', $intCategoryId)->update(array('pc_parent' => 0));
         CsPcategory::where('pc_id', $intCategoryId)->delete();
         return redirect()->route('package-category')->with('status', 'Entry Deleted Successfully');
     }
 
 
-public function packageManage($intId)
-
-  { 
-    $id=$intId; 
-    $resAssignedData = CsPackageDetail::where('pkd_pack_id','=',$id)->get();
-    //$vidData = CsVcategory::where('vc_pwhere(where()->get','=',$intId)->
-    $vidData = CsVideo::get();
-
-    //print_r($vidData);die;
-
-    //$resAssignedTest = CsPackageDetail::where('pkd_pack_id','=',$id)->get();
-
-    $testData = CsTest::get();
-
-    
-    $resTestData = CsTcategory::get();
-    $respdfData = CsScategory::get();
-    $respdfcount = CsStudyMaterial::get();
-
-
-    
-
-    $resFacultyData = CsStaff::get();
-    $resVideoData = CsVcategory::where('vc_parent','=',0)->get();
-    $resPackageData = CsPackage::where('package_id','=',$intId)->first();
-    $title='Manage Packages';
-    return view('Csadmin.Packages.packageManage',compact('title','resPackageData','resFacultyData','resVideoData','id','resAssignedData','vidData','resTestData','testData','respdfcount','respdfData'));
-  }
+    public function packageManage($intId)
+    { 
+        $userId = Session::get("CS_ADMIN")->user_id;
+        $resAssignedData = CsPackageDetail::where('pkd_pack_id','=',$intId)
+                        ->where('pkd_ins_id','=',$userId)->get();
+        $vidData = CsVideo::get();
+        $testData = CsTest::get();
+        $resTestData = CsTcategory::where('tc_parent','=',0) ->orderBy('tc_name', 'ASC')->get();
+        $respdfData = CsScategory::where('sc_parent','=',0) ->orderBy('sc_name', 'ASC')->get();
+        $respdfcount = CsStudyMaterial::get();
+        $resFacultyData = CsStaff::where('staff_institute_id','=',$userId)->get();
+        $resDemoVideoData = CsVideo::where('video_institute','=',$userId)->get();
+        $resVideoData = CsVcategory::where('vc_parent','=',0) ->orderBy('vc_name', 'ASC')->get();
+        $resPackageData = CsPackage::where('package_id','=',$intId)->first();
+        $title='Manage Packages';
+        return view('Csadmin.Packages.packageManage',compact('title','resDemoVideoData','userId','resPackageData','resFacultyData','resVideoData','intId','resAssignedData','vidData','resTestData','testData','respdfcount','respdfData'));
+    }
 
 
-function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
-  {
-     //echo $intSelectParent; die;
-     $strHtml=$strExtraHtml;
-   $intExtraLevel = $intLevel;
-
-          foreach($tree as $key=>$label)
-          {
-               $strStyle='';
-              if($label['pc_parent']!=0)
-              {
-              $strStyle=' style="background:#eaeaea"';
-             
-              }
-               if($label['pc_parent']==0)
-              {
-                   $intLevel=0;
-              }
-              $strExtraData = '';
-              for($i=0;$i<$intLevel;$i++)
-              {
-                   $strExtraData .='-';
-              }
-             $strselect ='';
-             if($label['pc_id']==$intSelectParent)
-             {
-                 //echo "hii"; die;
-                 $strselect ='selected="selected"';
-             }
-            $strHtml .='<option '.$strselect.' value="'.$label['pc_id'].'">'.$strExtraData.$label['pc_name'].'</option>';
-
-
-if(isset($label->children) && $intLevel!=2)
-{
-    //pr($label->children);
-    //pr($label['children']);
-$intLevel++;
-     $strHtml =$this->getCatgoryEntryChildHtml($label->children,$strHtml,$intLevel,$intSelectParent);
-      $intLevel = $intExtraLevel;
-
-}
-   }
-   
-   return $strHtml;
-       exit();
-  }
-
-
-function assignedPackageProccess(Request $request)
+    function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
     {
-        $aryPostData = $request->all();
-        
-    //  print_r($aryPostData);die;
-     CsPackageDetail::where('pkd_pack_id',$aryPostData['package_id'])->where('pkd_type',$aryPostData['pkd_type'])->delete();
+        $strHtml=$strExtraHtml;
+        $intExtraLevel = $intLevel;
+        foreach($tree as $key=>$label)
+        {
+            $strStyle='';
+            if($label['pc_parent']!=0)
+            {
+                $strStyle=' style="background:#eaeaea"';
+            }
+            if($label['pc_parent']==0)
+            {
+                $intLevel=0;
+            }
+            $strExtraData = '';
+            for($i=0;$i<$intLevel;$i++)
+            {
+                $strExtraData .='-';
+            }
+            $strselect ='';
+            if($label['pc_id']==$intSelectParent)
+            {
+                $strselect ='selected="selected"';
+            }
+            $strHtml .='<option '.$strselect.' value="'.$label['pc_id'].'">'.$strExtraData.$label['pc_name'].'</option>';
+            if(isset($label->children) && $intLevel!=2)
+            {
+                $intLevel++;
+                $strHtml =$this->getCatgoryEntryChildHtml($label->children,$strHtml,$intLevel,$intSelectParent);
+                $intLevel = $intExtraLevel;
+            }
+        }
+        return $strHtml;
+        exit();
+    }
 
+
+    function assignedPackageProccess(Request $request)
+    {
+        $userId = Session::get("CS_ADMIN")->user_id;
+        $aryPostData = $request->all();
+        /* echo "<pre>";
+        print_r($aryPostData);die(); */
+        CsPackageDetail::where('pkd_pack_id',$aryPostData['package_id'])
+                    ->where('pkd_type',$aryPostData['pkd_type'])
+                    ->where('pkd_ins_id',$userId)
+                    ->delete();
         foreach($aryPostData['pkd_pack_id'] as $key=>$label)
         {
-        $postobj = new CsPackageDetail;
-        $postobj->pkd_type=$aryPostData['pkd_type'];
-        $postobj->pkd_ref=$label;
-        $postobj->pkd_pack_id=$aryPostData['package_id'];
-        $postobj->pkd_name=$aryPostData['pkd_name'][$key];
-        $postobj->save();
+            $postobj = new CsPackageDetail;
+            $postobj->pkd_type = $aryPostData['pkd_type'];
+            $postobj->pkd_ref = $label;
+            $postobj->pkd_pack_id = $aryPostData['package_id'];
+            $postobj->pkd_name = $aryPostData['pkd_name'][$key];
+            $postobj->pkd_ins_id = $userId;
+            $postobj->save();
         }
         return redirect()->route('packageManage', $aryPostData['package_id'])->with('status', 'Entry Saved Successfully.');   
-        
     }
 
 

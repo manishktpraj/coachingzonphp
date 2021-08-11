@@ -82,7 +82,7 @@ foreach($resVideoData as $video)
     
 </td>
 <td><?php echo date("d M Y",strtotime($video->created_at));?></td>
-<td>
+<td style="width:105px;">
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
 <a href="<?php echo e(route('add-new-video',$video->video_id )); ?>" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>

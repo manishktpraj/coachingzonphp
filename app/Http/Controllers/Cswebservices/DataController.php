@@ -17,6 +17,8 @@ use App\Http\Model\CsInstitute;
 use App\Http\Model\CsSlider;
 use App\Http\Model\CsStudyMaterial;
 use App\Http\Model\CsTest;
+use App\Http\Model\CsVideo;
+use App\Http\Model\CsPackageDetail;
 
 
 
@@ -182,11 +184,7 @@ class DataController extends Controller
             $aryResponse['resultssubcategory'] = $resPackageCategory;
         }
             
-           
-
-
-
-   
+            
         }else{
             $aryResponse['message']='failed';
             $aryResponse['course']='Method Not Allowed';
@@ -203,12 +201,10 @@ class DataController extends Controller
         $aryResponse =array();
         if ($request->isMethod('post')) 
         {
-            $productdata = Csproduct::where('product_ins_id', '=', $aryPostData['institute_id'])->get();
+            $productdata = Csproduct::get();
             $aryResponse['message']='ok';
-            $aryResponse['bookurl'] = SITE_BOOK_IMAGE;
-           
+            $aryResponse['bookurl'] = SITE_UPLOAD_URL.SITE_PRODUCT_IMAGE;
             $aryResponse['results']=$productdata;
-   
         }else{
             $aryResponse['message']='failed';
             $aryResponse['ebook']='Method Not Allowed';
@@ -280,8 +276,6 @@ class DataController extends Controller
               ->get();
               
             $productdata = CsScategory::get();
-           
-            
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
@@ -305,13 +299,9 @@ class DataController extends Controller
         if ($request->isMethod('post')) 
         {
             $productdata = CsInstituteCategory::get();
-
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE;
-         
-
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
-
         }else{
             $aryResponse['message']='failed';
             $aryResponse['course']='Method Not Allowed';
@@ -358,7 +348,6 @@ class DataController extends Controller
             $aryResponse['message']='ok';
            // $aryResponse['institute']=$institutedata;
             $aryResponse['results']=$productdata;
-
         }else{
             $aryResponse['message']='failed';
             $aryResponse['course']='Method Not Allowed';
@@ -368,7 +357,42 @@ class DataController extends Controller
        }
 
 
+       function institutes(Request $request) 
+       { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsInstitute::whereRaw("FIND_IN_SET('".$aryPostData['category_id']."',ins_cat_id)")->get();
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
 
 
+       function packagedetail(Request $request) 
+       { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsPackageDetail::where('pkd_ins_id', '=', $aryPostData['institute_id'])->get();
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
 
-}
+
+} 

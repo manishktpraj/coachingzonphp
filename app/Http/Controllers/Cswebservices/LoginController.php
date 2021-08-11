@@ -100,6 +100,8 @@ return true;
                 $postobj['student_otp'] = $strRandomOtp;
                 $postobj['student_created_datetime'] = date('Y-m-d h:i:s');
                 $postobj['student_phone'] =$data->student_phone;
+
+                
                 $postobj->save();
                 
                 $intUserId = $postobj->student_id;

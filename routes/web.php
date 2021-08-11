@@ -110,9 +110,6 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         Route::any('/assignedPackageProccess/{id?}', 'PackagesController@assignedPackageProccess')->name('assignedPackageProccess');
         Route::any('/deletepackagedetail/{id}', 'PackagesController@deletepackagedetail')->name('deletepackagedetail');
 
-
-        
-
         /******Offers & Promos Section*******/
         Route::any('/offers-promos', 'OffersController@index')->name('offers-promos');
         Route::any('/add-new-offers/{id?}', 'OffersController@alloffersShow')->name('add-new-offers');

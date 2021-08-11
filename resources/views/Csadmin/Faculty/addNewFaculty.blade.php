@@ -108,10 +108,9 @@
 
 </div> 
 <div class="card-footer" style="padding: 0.75rem 1rem;">
-<button type="submit" onclick="return checkValidation($(this))" class="btn btn-success">Publish</button>
+<button type="submit" onclick="return checkFacultyValidation($(this))" class="btn btn-success">Publish</button>
 </div>
 </div>
-
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Faculty Image</h6>
@@ -137,12 +136,25 @@
 </div>
 </div>
 </div>
- 
-
-<script>
+ <script>
     if($('.ckeditor').length>0){
     CKEDITOR.replace('video_desc');
     CKEDITOR.config.allowedContent = true;
 }
+</script>
+<script>
+    function checkFacultyValidation(obj)
+    {
+        var txtPassword = $('#txtPassword').val();
+        var txtConfirmPassword = $('#txtConfirmPassword').val();
+        if(txtPassword!=txtConfirmPassword)
+        {
+            alert('Password and Confirm Password does not match');
+            return false;
+        }else{
+            return true;
+        }
+
+    }
 </script>
 @endsection

@@ -45,7 +45,7 @@
 <th scope="col" style="text-align:center;">Order</th>
 <th scope="col">Status</th>
 <th scope="col" style="text-align:center" >Date</th>
-<th scope="col" style="text-align:center">Action</th>
+<th scope="col" style="text-align:center;width: 102px;">Action</th>
 </tr>
 </thead>
 <tbody>

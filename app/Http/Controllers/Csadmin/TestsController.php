@@ -151,7 +151,7 @@ class TestsController extends Controller
             $postobj->test_slug = Str::slug($aryPostData['test_name'], '-');
             $postobj->test_institute = $user->user_id;
             $postobj->test_institute_name = $user->staff_name;
-           
+            
 
         }   
         

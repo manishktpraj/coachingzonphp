@@ -450,9 +450,11 @@ class CsproductController extends Controller
        }else{
            $postobj = new Csproduct;
            $postobj->product_uniqueid = Str::slug($aryPostData['product_title'], '-');
+           $postobj->product_ins_id = $user->user_id;
+           $postobj->product_ins_name = $user->staff_name;
        }   
        
-       $postobj->product_ins_id = $user->user_id;
+       
 
        $postobj->product_status = 1;
        $postobj->product_title = $aryPostData['product_title'];

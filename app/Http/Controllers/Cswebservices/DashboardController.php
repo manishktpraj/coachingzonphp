@@ -33,6 +33,7 @@ class DashboardController extends Controller
             $aryResponse['paurl'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
             $aryResponse['surl'] = SITE_UPLOAD_URL.SITE_SLIDER_IMAGE;
             $aryResponse['insurl'] = SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE;
+            $aryResponse['producturl'] = SITE_UPLOAD_URL.SITE_PRODUCT_IMAGE;
     
             $aryResponse['pcategory'] = $resPackageCategory;
             $resPackageCategory= CsSlider::where(['slider_status'=>1])->orderBy('slider_id')->get();
