@@ -6,5 +6,11 @@ use Illuminate\Support\Facades\DB;
 class CsPackageDetail extends Model
 {
     protected $table="cs_package_detail";
-    protected $primaryKey = 'pkd_id';
+    protected $primaryKey = 'pkd_id';   
+    public function Staff()
+    {
+        return $this->hasMany(CsStaff::class,"pkd_id");
+    }
+
+ 
 } 

@@ -363,7 +363,12 @@ class DataController extends Controller
         $aryResponse =array();
         if ($request->isMethod('post')) 
         {
+            if($aryPostData['category_id']==0)
+            {
+            $productdata = CsInstitute::get();
+            }else{
             $productdata = CsInstitute::whereRaw("FIND_IN_SET('".$aryPostData['category_id']."',ins_cat_id)")->get();
+            }
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_INSTITUTE_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
@@ -376,16 +381,21 @@ class DataController extends Controller
        }
 
 
+      
        function packagedetail(Request $request) 
        { 
         $aryPostData = $request->all();
         $aryResponse =array();
         if ($request->isMethod('post')) 
         {
-            $productdata = CsPackageDetail::where('pkd_ins_id', '=', $aryPostData['institute_id'])->get();
+            $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 1)->get();
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
             $aryResponse['message']='ok';
-            $aryResponse['results']=$productdata;
+            $aryResponse['results_faculty']=$productdata;
+            $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
+            $aryResponse['results_demo_video']=$productdata;
+
+
         }else{
             $aryResponse['message']='failed';
             $aryResponse['course']='Method Not Allowed';
@@ -393,6 +403,9 @@ class DataController extends Controller
         echo json_encode($aryResponse);
         exit;
        }
+
+
+
 
 
 } 

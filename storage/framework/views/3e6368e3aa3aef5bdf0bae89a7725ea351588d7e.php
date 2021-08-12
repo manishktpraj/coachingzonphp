@@ -29,14 +29,18 @@ Add Videos</a>
 </div>
 <div class="card-body">
 <div class="row row-xs">
-<?php foreach($resAssignedData as $video_data){   
- if($video_data->pkd_type==3){
+<?php 
+foreach($resAssignedData as $video_data)
+{   
+ if($video_data->pkd_type==3)
+ {
   $orederData = $vidData->where('video_vc_id','=',$video_data->pkd_ref)->count();
  ?>  
- <input type="hidden" value="<?php echo $video_data->pkd_pack_id; ?>" name="pack_id"> 
 <div class="col-sm-6 col-lg-4 col-xl-3">
 <div class="media media-folder">
 <i data-feather="folder"></i>
+<input type="hidden" value="<?php echo $video_data->pkd_pack_id; ?>" name="pack_id"> 
+
 <div class="media-body">
 <h6><a href="" class="link-02"><?php echo $video_data->pkd_name;?></a></h6>
 <span><?php echo $orederData;?> files</span>
@@ -58,7 +62,7 @@ Add Videos</a>
 <!----------Video Section-------------->
 
 <!----------Test Section-------------->
-<?php  if($resPackageData->package_type==3 || $resPackageData->package_type==2|| $resPackageData->package_type==0){?>
+<?php  if(in_array($resPackageData->package_type,array(3,2,0))){?>
 
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
@@ -99,7 +103,9 @@ Add Test</a>
 
 <!----------Pdf Section-------------->
 
-<?php if($resPackageData->package_type==3){?>
+<?php if($resPackageData->package_type==3)
+{
+?>
 <div class="card mg-b-15">
 <div class="card-header d-flex align-items-center justify-content-between">
 <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Study Materials in this course</h6>
@@ -168,7 +174,8 @@ Add Study Material</a>
           </div>
      </div>
 </div>
-<?php if($resPackageData->package_type==4){?>
+
+<?php if($resPackageData->package_type==4 || $resPackageData->package_type==3){?>
 <div class="card mg-b-15">
      <div class="card-header d-flex align-items-center justify-content-between">
           <h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">Courses Demo Videos</h6>
@@ -288,11 +295,14 @@ foreach($resFacultyData as $faculty){
 $cnt =0;
 foreach($resDemoVideoData as $value){
     $cnt++;
+    $queryChecked = DB::table('cs_package_detail')
+         ->where('pkd_ref','=',$value->video_id)
+         ->first();
  ?>
 <tr>
 <input type="hidden" value="<?php echo $value->video_name;?>" name="pkd_name[<?php echo $cnt; ?>]">
 <td scope="row" ><?php echo $value->video_name;?></td>
-<td scope="row" style="text-align:center;width: 50px;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="pkd_pack_id[<?php echo $cnt; ?>]" style="vertical-align: middle;" value="<?php echo $value->video_id ; ?>" ></td></tr>
+<td scope="row" style="text-align:center;width: 50px;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="pkd_pack_id[<?php echo $cnt; ?>]" style="vertical-align: middle;" value="<?php echo $value->video_id ; ?>" <?php echo (isset($queryChecked) && $queryChecked->pkd_id>0)?'checked':'';?>></td></tr>
 <?php }
 }else{?>  
 <tr><td colspan="2" class="text-center">No Record Found</td></tr>
@@ -337,19 +347,31 @@ foreach($resDemoVideoData as $value){
 $cnt =0;
 foreach($resVideoData as $video){
     $cnt++;
-    $query = DB::table('cs_video')
-         ->whereRaw('FIND_IN_SET('.$video->vc_id.',video_vc_id)')
-         ->where('video_institute','=',$userId)
-         ->count();
-    $queryChecked = DB::table('cs_package_detail')
-         ->where('pkd_ref','=',$video->vc_id)
+    $query =0;
+    if($userId->role_type!=0)
+    {
+     $query = DB::table('cs_video')
+     ->whereRaw('FIND_IN_SET('.$video->vc_id.',video_vc_id)')
+     ->where('video_institute','=',$userId->user_id)
+     ->count();
+    }else{
+     $query = DB::table('cs_video')
+     ->whereRaw('FIND_IN_SET('.$video->vc_id.',video_vc_id)')
+     ->count();
+    }
+  
+     $queryChecked = DB::table('cs_package_detail')
+         ->where('pkd_ref','=',$video->vc_id)->where('pkd_pack_id','=',$intId)->where('pkd_type','=',3)
          ->first();
-?>
+
+
+ ?>
 <?php if(isset($query) && $query>0){?>
 <tr>
 <input type="hidden" value="<?php echo $video->vc_name;?>" name="pkd_name[<?php echo $cnt; ?>]">
 <td scope="row"><?php echo $video->vc_name;?> (<?php echo $query?>)</td>
-<td scope="row" style="text-align:center;width: 50px;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="pkd_pack_id[<?php echo $cnt; ?>]" style="vertical-align: middle;" value="<?php echo $video->vc_id; ?>" <?php echo (isset($queryChecked) && $queryChecked->pkd_id>0)?'checked':'';?>></td></tr>
+<td scope="row" style="text-align:center;width: 50px;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="pkd_pack_id[<?php echo $cnt; ?>]" style="vertical-align: middle;" value="<?php echo $video->vc_id; ?>" 
+<?php echo (isset($queryChecked->pkd_id) && $queryChecked->pkd_id>0)?'checked':'';?>></td></tr>
 <?php }?>
 <?php }
 }else{?>  
@@ -398,12 +420,20 @@ foreach($resVideoData as $video){
 $cnt =0;
 foreach($respdfData as $pdf){
     $cnt++;
+    $query =0;
+    if($userId->role_type!=0)
+    {
     $query = DB::table('cs_study_material')
          ->whereRaw('FIND_IN_SET('.$pdf->sc_id.',sm_sc_id)')
          ->where('sm_institute','=',$userId)
          ->count();
-    $queryChecked = DB::table('cs_package_detail')
-         ->where('pkd_ref','=',$pdf->sc_id)
+     }else{
+          $query = DB::table('cs_study_material')
+          ->whereRaw('FIND_IN_SET('.$pdf->sc_id.',sm_sc_id)')
+          ->count();
+         }
+         $queryChecked = DB::table('cs_package_detail')
+         ->where('pkd_ref','=',$pdf->sc_id)->where('pkd_pack_id','=',$intId)->where('pkd_type','=',4)
          ->first();
 ?>
 <?php if(isset($query) && $query>0){?>
@@ -460,13 +490,25 @@ foreach($respdfData as $pdf){
 $cnt =0;
 foreach($resTestData as $test){
     $cnt++;
+
+    $query =0;
+    if($userId->role_type!=0)
+    {
+
     $query = DB::table('cs_test')
          ->whereRaw('FIND_IN_SET('.$test->tc_id.',test_tc_id)')
          ->where('test_institute','=',$userId)
          ->count();
-    $queryChecked = DB::table('cs_package_detail')
-         ->where('pkd_ref','=',$test->tc_id)
+    }else{
+     $query = DB::table('cs_test')
+     ->whereRaw('FIND_IN_SET('.$test->tc_id.',test_tc_id)')
+     ->count();   
+    }
+         $queryChecked = DB::table('cs_package_detail')
+         ->where('pkd_ref','=',$test->tc_id)->where('pkd_pack_id','=',$intId)->where('pkd_type','=',2)
          ->first();
+
+
 ?>
 <?php if(isset($query) && $query>0){?>
 <tr>

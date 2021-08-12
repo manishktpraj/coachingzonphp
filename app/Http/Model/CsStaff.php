@@ -7,4 +7,6 @@ class CsStaff extends Model
 {
     protected $table="cs_staff";
     protected $primaryKey = 'staff_id';
+
+   
 } 

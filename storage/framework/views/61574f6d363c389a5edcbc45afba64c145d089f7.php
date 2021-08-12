@@ -99,7 +99,7 @@ foreach($sub as $s){?>
 <div class="col-lg-4">
 <div class="form-group mg-b-0">
 <label>Duration:</label>
-<input type="time" class="form-control" name="test_duration"  value="<?php echo isset($resTestData->test_duration)?$resTestData->test_duration:''?>">
+<input type="number" class="form-control" name="test_duration"  value="<?php echo isset($resTestData->test_duration)?$resTestData->test_duration:''?>">
 </div>
 </div>
 <div class="col-lg-4">

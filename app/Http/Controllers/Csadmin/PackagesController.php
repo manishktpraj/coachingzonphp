@@ -21,6 +21,7 @@ use Validator;
 
 class PackagesController extends Controller
 {
+    
     public function index(Request $request)
     {
         $user = Session::get("CS_ADMIN");
@@ -65,27 +66,22 @@ class PackagesController extends Controller
         }
         /***********************Apply Condition ************/
    
-        if(session()->has('FILTER_PACKAGE')){
-        $strFilterKeyword = Session::get('FILTER_PACKAGE');
-            if($user->role_type==0){
-                $resPackageData = CsPackage::where('package_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-            }else{
 
-        $resPackageData = CsPackage::where('package_name', 'LIKE', "%{$strFilterKeyword}%")->where('pacakge_ins_id','=',$user->user_id)->paginate(20);
-        //print_r($resVideoData);
-        }}else{
-            if($user->role_type==0){
-                $resPackageData = CsPackage::leftJoin('cs_institute', function($join) {
-                    $join->on('cs_package.pacakge_ins_id', '=', 'cs_institute.ins_id');
-                  })
-                  ->paginate();
-            }else{
         $resPackageData = CsPackage::leftJoin('cs_institute', function($join) {
             $join->on('cs_package.pacakge_ins_id', '=', 'cs_institute.ins_id');
-          })
-          ->where('pacakge_ins_id','=',$user->user_id)->paginate(20);
+          });
+
+
+        if(session()->has('FILTER_PACKAGE')){
+        $strFilterKeyword = Session::get('FILTER_PACKAGE');
+        $resPackageData = $resPackageData->where('package_name', 'LIKE', "%{$strFilterKeyword}%");
+        } 
+        if($user->role_type!=0){
+            $resPackageData = $resPackageData->where('pacakge_ins_id','=',$user->user_id);
         }
-    }    
+      $resPackageData =  $resPackageData->paginate(20);
+
+    
      //print_r($resPackageData);
     $resCategoryData = CsPcategory::get(); 
     $title='Packages';
@@ -470,16 +466,19 @@ public function categoryPackage(Request $request,$intCategoryId=0)
 
     public function packageManage($intId)
     { 
-        $userId = Session::get("CS_ADMIN")->user_id;
+        $userId = Session::get("CS_ADMIN");
+         
         $resAssignedData = CsPackageDetail::where('pkd_pack_id','=',$intId)
-                        ->where('pkd_ins_id','=',$userId)->get();
+                        ->where('pkd_ins_id','=',$userId->user_id)->get();
+                        $resAta = CsPackageDetail::get();
+ 
         $vidData = CsVideo::get();
         $testData = CsTest::get();
         $resTestData = CsTcategory::where('tc_parent','=',0) ->orderBy('tc_name', 'ASC')->get();
         $respdfData = CsScategory::where('sc_parent','=',0) ->orderBy('sc_name', 'ASC')->get();
         $respdfcount = CsStudyMaterial::get();
-        $resFacultyData = CsStaff::where('staff_institute_id','=',$userId)->get();
-        $resDemoVideoData = CsVideo::where('video_institute','=',$userId)->get();
+        $resFacultyData = CsStaff::where('staff_institute_id','=',$userId->user_id)->get();
+        $resDemoVideoData = CsVideo::where('video_institute','=',$userId->user_id)->get();
         $resVideoData = CsVcategory::where('vc_parent','=',0) ->orderBy('vc_name', 'ASC')->get();
         $resPackageData = CsPackage::where('package_id','=',$intId)->first();
         $title='Manage Packages';

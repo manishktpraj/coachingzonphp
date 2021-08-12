@@ -62,7 +62,7 @@ foreach($resPackageData as $package){?>
 <div class="avatar"><img src="<?php echo (isset($package->package_image) && $package->package_image!="")?SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE.$package->package_image:SITE_NO_IMAGE_PATH;?>" class="rounded" alt="" style="border:1px solid #ddd;"></div>
 <div class="media-body pd-l-10">
 <h6 class="mg-b-3" style=" white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis; width:300px"><a href="#"><?php echo $package->package_name;?></a></h6>
-<span class="d-block tx-12 tx-color-03"><?php echo $package->package_pc_name;?></span>
+<span class="d-block tx-12 tx-color-03" style=" white-space: nowrap;  overflow: hidden;  text-overflow: ellipsis; width:200px"><?php echo $package->package_pc_name;?></span>
 </div>
 </div>
 </td>

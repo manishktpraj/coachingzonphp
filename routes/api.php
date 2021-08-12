@@ -50,8 +50,6 @@ Route::group(['prefix'=>'user'], function(){
     Route::any('/freetestseries', 'DataController@freetestseries')->name('freetestseries');
     Route::any('/institutes', 'DataController@institutes')->name('institutes');
     Route::any('/packagedetail', 'DataController@packagedetail')->name('packagedetail');
-
-    
     
        
 });

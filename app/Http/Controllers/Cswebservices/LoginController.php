@@ -50,6 +50,7 @@ return true;
             $rowUserInfo = CsStudent::where('student_email', '=', $data->student_email)
                                     ->orWhere('student_phone', '=', $data->student_email)
                                     ->where('student_password', '=', $data->student_password)
+                                    ->where('student_status', '=', 1)
                                     ->first();
     
             if(isset($rowUserInfo->student_id) && $rowUserInfo->student_id>0)
@@ -95,24 +96,9 @@ return true;
                 $aryResponse['notification']='Login Successfully...';
                 $aryResponse['results'] = $rowUserInfo;
             }else{
-                $postobj = new CsStudent;
-                $strRandomOtp =rand(1000,9999);
-                $postobj['student_otp'] = $strRandomOtp;
-                $postobj['student_created_datetime'] = date('Y-m-d h:i:s');
-                $postobj['student_phone'] =$data->student_phone;
-
-                
-                $postobj->save();
-                
-                $intUserId = $postobj->student_id;
-                 $strMessage = 'Your one Time Password (OTP) for registration/transaction is '.$strRandomOtp.' .DO NOT SHARE WITH ANYBODY.NEONCS';
-                 $strMessage = 'Forgot Password : Dear Aspirant, your OTP for SAMYAK App is : '.$strRandomOtp;
-                 self::sendSms($data->student_phone,$strMessage);
-                $aryResponse['message']='ok';
-                $aryResponse['notification']='OTP Sent  To Your Register Mobile Number';
-                $resUserInfo = CsStudent::where('student_id', '=',$intUserId)->first();
-                CsStudent::where('student_id',$resUserInfo->student_id)->update(['student_otp'=>$strRandomOtp]);
-                $aryResponse['results'] = $resUserInfo;
+						$aryResponse['message']='failed';
+						$aryResponse['notification']='Not Registered with us';
+           
             }
         }else{
             $aryResponse['message']='failed';
@@ -225,11 +211,13 @@ return true;
                     
                     if(isset($rowUserRefferdByInfo->student_id) && $rowUserRefferdByInfo->student_id>0)
                     {
-                        $rowUserInfo->student_ref_id = $rowUserRefferdByInfo->student_id;
+                        $rowUserInfo['student_ref_id'] = $rowUserRefferdByInfo->student_id;
                     }else{
-                        $rowUserInfo->student_ref_id = '';
+                        $rowUserInfo['student_ref_id'] = 0;
                     }
                 }
+
+               /////// print_r( $rowUserInfo);
                 $rowUserInfo->student_first_name = $data->student_first_name;
               ////  $rowUserInfo->student_last_name = $data->student_last_name;
                 $rowUserInfo->student_email = $data->student_email;
@@ -268,7 +256,7 @@ return true;
         if ($request->isMethod('post')) 
         {
             $data = (object)$request->all();
-            $rowUserInfo = CsStudent::where('student_phone', '=', $data->student_phone)->first();
+            $rowUserInfo = CsStudent::where('student_phone', '=', $data->student_phone)->where('student_status', '=', 1)->first();
             if(isset($rowUserInfo->student_id) && $rowUserInfo->student_id>0)
             {
                 $aryResponse['message']='ok';
@@ -284,8 +272,7 @@ return true;
             }else{
                 $aryResponse['message']='failed';
                 $aryResponse['notification']='Mobile number not register yet';
-                $resUserInfo = CsStudent::where('student_id', '=', $data->student_id)->first();
-                $aryResponse['results'] = $resUserInfo;
+               
             }
         }else{
             $aryResponse['message']='failed';
@@ -326,7 +313,7 @@ return true;
                 $aryResponse['notification']='Profile Updated Successfully';
              
                 $rowUserInfo->student_first_name = $data->student_first_name;
-                $rowUserInfo->student_last_name = $data->student_last_name;
+                $rowUserInfo->student_dob = $data->student_dob;
                 $rowUserInfo->save();
                 $rowUserInfo = CsStudent::where('student_id', '=', $data->student_id)->first();
                 $aryResponse['results']=$rowUserInfo;
