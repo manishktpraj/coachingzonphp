@@ -14,7 +14,6 @@ class InstituteCategoryController extends Controller
     //
     public function index(Request $request, $intid=NULL)
   {
-  //echo $int;  
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -25,7 +24,6 @@ class InstituteCategoryController extends Controller
      
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
-       //print_r($aryPostData);
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
           $aryPostData =$_POST;
          $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -77,7 +75,6 @@ class InstituteCategoryController extends Controller
     $tree = $this->buildTree($resCategoryData);
     $strCategoryHtml = $this->getCatgoryChildHtml($tree);
     $resChildCategory = CsInstituteCategory::get();
-   // print_r($tree);
 
     $title='Manage Intitute Category';
     return view('Csadmin.Institute.category',compact('title','rowCategoryData','resCategoryData','strCategoryHtml','resChildCategory','rowCategoryData'));
@@ -166,7 +163,6 @@ class InstituteCategoryController extends Controller
   public function catstatus($intCategoryId)
     {  
         $rowCategoryData = CsInstituteCategory::where('icat_id',$intCategoryId)->first();
-        //print_r($rowCategoryData);die;
         if($rowCategoryData->icat_status==0){
             $status = 1;
         }else{
@@ -186,7 +182,6 @@ class InstituteCategoryController extends Controller
     function insCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['icat_id']) && $aryPostData['icat_id']>0)
         {
             $postobj = CsInstituteCategory::where('icat_id',$aryPostData['icat_id'])->first();

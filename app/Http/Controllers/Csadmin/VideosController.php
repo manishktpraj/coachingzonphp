@@ -121,7 +121,6 @@ class VideosController extends Controller
          $user=Session::get("CS_ADMIN");
 
         $aryPostData = $request->all();
-       // print_r($aryPostData);die;
         if(isset($aryPostData['video_id']) && $aryPostData['video_id']>0)
         {
             $postobj = CsVideo::where('video_id',$aryPostData['video_id'])->first();
@@ -148,15 +147,13 @@ class VideosController extends Controller
             $aryPostData['video_vc_id_'] = array_unique($aryPostData['video_vc_id_']);
             $postobj->video_vc_id = implode(',',$aryPostData['video_vc_id_']);
             $resCategoryName = CsVcategory::whereIn('vc_id',$aryPostData['video_vc_id_'])->get(); 
-            //print_r($resCategoryName);die;
+            
             $catName = array();
             foreach($resCategoryName as $values){
             $catName[] = $values->vc_name;
             }
             $postobj->video_vc_name  = implode(', ',$catName);
-            /*echo '<pre>';
-            print_r($resCategoryName);die;*/
-            //$postobj->sm_sc_name  = implode(', ',$resCategoryName['sc_name']);
+           
         }else{
             $postobj->video_vc_name = '';
             $postobj->video_vc_id = '';
@@ -191,7 +188,6 @@ class VideosController extends Controller
     public function videoStatus($intCategoryId)
     {
         $rowCategoryData = CsVideo::where('video_id',$intCategoryId)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->video_status==1){
             $status = 0;
         }else{
@@ -211,7 +207,6 @@ class VideosController extends Controller
   
     public function videoCategory(Request $request,$intCategoryId=0)
     {
-         //echo $int;  
      /***********************Reset Filter Session ************/
      if($request->get('reset')==1)
      {
@@ -222,7 +217,6 @@ class VideosController extends Controller
   
   /***********************Bulk Action ************/
     $aryPostData = $request->all();
-    //print_r($aryPostData);
     if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
        $aryPostData =$_POST;
       $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -280,13 +274,9 @@ class VideosController extends Controller
 
         
         //$resParentCategoryList = CsVcategory::select('vc_id')->where('vc_parent', 0)->get();
-        //print_r($resParentCategoryList);
         $resCategoryListData =CsVcategory::get();
         $tree = $this->buildTree($resCategoryListData);
         $strEntryHtml = $this->getCatgoryEntryChildHtml($tree,'',0,$intSelectParent);
-        
-        //print_r($strEntryHtml);
-        
         
         $title='Video Category';
         return view('Csadmin.Videos.videoCategory',compact('title','resCategoryData','rowCategoryData','strCategoryHtml','resChildCategory','strEntryHtml'));
@@ -314,7 +304,6 @@ class VideosController extends Controller
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
     
@@ -421,7 +410,6 @@ class VideosController extends Controller
     function videoCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['vc_id']) && $aryPostData['vc_id']>0)
         {
             $postobj = CsVcategory::where('vc_id',$aryPostData['vc_id'])->first();
@@ -501,14 +489,12 @@ class VideosController extends Controller
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
    
    
    function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
   {
-     //echo $intSelectParent; die;
      $strHtml=$strExtraHtml;
    $intExtraLevel = $intLevel;
 
@@ -532,7 +518,6 @@ class VideosController extends Controller
              $strselect ='';
              if($label['vc_id']==$intSelectParent)
              {
-                 //echo "hii"; die;
                  $strselect ='selected="selected"';
              }
             $strHtml .='<option '.$strselect.' value="'.$label['vc_id'].'">'.$strExtraData.$label['vc_name'].'</option>';
@@ -540,8 +525,6 @@ class VideosController extends Controller
 
 if(isset($label->children) && $intLevel!=2)
 {
-    //pr($label->children);
-    //pr($label['children']);
 $intLevel++;
      $strHtml =$this->getCatgoryEntryChildHtml($label->children,$strHtml,$intLevel,$intSelectParent);
       $intLevel = $intExtraLevel;

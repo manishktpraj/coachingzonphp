@@ -1,6 +1,5 @@
 
 <?php $__env->startSection('content'); ?>
-<?php //print_r($strCategory); echo "shikha";?>
 
 <div class="content-body">
 <div class="container pd-x-0">
@@ -166,6 +165,32 @@
 </div>
 <span class="tx-11 tx-color-03">Accepted: gif, png, jpg. Max file size 2Mb</span>
 </div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="card mg-b-15">
+<div class="card-header d-flex align-items-center justify-content-between">
+<h6 class="mg-b-0" style="font-size: 1rem;font-weight: 600;">CZ Share</h6>
+</div>
+<div class="card-body" >
+
+<div class="row row-xs">
+<div class="col-lg-12">
+<div class="form-group">
+<div class="input-group mg-b-10">
+<div class="input-group-prepend">
+    <span class="input-group-text" style="font-weight: bold;">%</span>
+  </div>
+<input type="text" class="form-control" name="ins_cz_share" required="" value="<?php echo isset($resInstituteData->ins_cz_share)?$resInstituteData->ins_cz_share:''?>">
+</div>
+</div>
+</div>
+
+
+ 
 </div>
 </div>
 </div>

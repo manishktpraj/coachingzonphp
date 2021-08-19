@@ -7,4 +7,7 @@ class CsVcategory extends Model
 {
     protected $table="cs_vcategory";
     protected $primaryKey = 'vc_id';
+ 
+ 
+   
 } 

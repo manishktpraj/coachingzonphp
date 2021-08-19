@@ -50,6 +50,7 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         Route::any('/exportQuestion', 'QuestionController@exportQuestion')->name('exportQuestion');
         Route::any('/importQuestion', 'QuestionController@importQuestion')->name('importQuestion');
 
+
         /******Tests/Exams Section*******/
         Route::any('/tests', 'TestsController@index')->name('tests');
         Route::any('/addnew/{id?}', 'TestsController@addNewTest')->name('addnewtest');
@@ -60,6 +61,11 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         Route::any('/testCategoryProccess', 'TestsController@testCategoryProccess')->name('testCategoryProccess');
         Route::any('/changeStatusTCategory/{id}', 'TestsController@changeStatusTCategory')->name('changeStatusTCategory');
         Route::any('/testCatDelete/{id}', 'TestsController@testCatDelete')->name('testCatDelete');
+        Route::any('/testQuestion/{id?}', 'TestsController@testQuestion')->name('testQuestion');
+        Route::any('/addtestQuestion/{id?}', 'TestsController@addtestQuestion')->name('addtestQuestion');
+
+
+
 
         /******Videos Section*******/
         Route::any('/all-videos', 'VideosController@index')->name('all-videos');
@@ -119,7 +125,13 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         
         /******Orders Section*******/
         Route::any('/order', 'OrderController@index')->name('order');
-      
+        Route::any('/order-detail/{id}', 'OrderController@order_detail')->name('order-detail');
+
+
+
+
+
+        
       /******Faculty Section*******/
         Route::any('/faculty', 'FacultyController@index')->name('faculty');
         Route::any('/add-new-faculty/{id?}', 'FacultyController@addNewFaculty')->name('add-new-faculty');
@@ -135,6 +147,9 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
         
         /******Reports Section*******/
         Route::any('/reports', 'ReportsController@index')->name('reports');
+        
+   /******commission Section*******/
+   Route::any('/commission', 'CommissionController@index')->name('commission');
         
         /******Payments Section*******/
         Route::any('/transaction', 'TransactionController@index')->name('transaction');

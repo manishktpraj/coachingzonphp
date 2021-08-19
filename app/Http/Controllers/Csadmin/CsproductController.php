@@ -16,7 +16,6 @@ class CsproductController extends Controller
   public function index(Request $request)
   {
     $user=Session::get("CS_ADMIN");
-   //print_r($user);
       
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
@@ -70,7 +69,6 @@ class CsproductController extends Controller
             }else{
 
         $resPackageData = Csproduct::where('product_title', 'LIKE', "%{$strFilterKeyword}%")->where('product_ins_id','=',$user->user_id)->paginate(20);
-        //print_r($resVideoData);
         }}else{
             if($user->role_type==0){
           $resPackageData=  Csproduct::leftJoin('cs_institute', function($join) {
@@ -127,7 +125,6 @@ class CsproductController extends Controller
     function productCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['pr_cat_id']) && $aryPostData['pr_cat_id']>0)
         {
             $postobj = CsProductCategory::where('pr_cat_id',$aryPostData['pr_cat_id'])->first();
@@ -178,7 +175,6 @@ class CsproductController extends Controller
      
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
-       //print_r($aryPostData);
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
           $aryPostData =$_POST;
          $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -237,10 +233,6 @@ class CsproductController extends Controller
         $resCategoryListData =CsProductCategory::get();
         $tree = $this->buildTree($resCategoryListData);
         $strEntryHtml = $this->getCatgoryEntryChildHtml($tree,'',0,$intSelectParent);
-        
-        //print_r($strEntryHtml);
-        
-        
         $title='Product Category';
         return view('Csadmin.Csproduct.productcat',compact('title','resCategoryData','rowCategoryData','strCategoryHtml','resChildCategory','strEntryHtml'));
     }
@@ -267,7 +259,6 @@ class CsproductController extends Controller
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
     
@@ -372,11 +363,11 @@ class CsproductController extends Controller
     }
     function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
     {
-       //echo $intSelectParent; die;
-       $strHtml=$strExtraHtml;
+
+        $strHtml=$strExtraHtml;
      $intExtraLevel = $intLevel;
-  //print_r($tree);die;
-            foreach($tree as $key=>$label)
+
+     foreach($tree as $key=>$label)
             {
                  $strStyle='';
                 if($label['pr_cat_parent']!=0)
@@ -396,16 +387,14 @@ class CsproductController extends Controller
                $strselect ='';
                if($label['pr_cat_id']==$intSelectParent)
                {
-                //   echo "hii"; die;
-                   $strselect ='selected="selected"';
+
+                $strselect ='selected="selected"';
                }
               $strHtml .='<option '.$strselect.' value="'.$label['pr_cat_id'].'">'.$strExtraData.$label['pr_cat_name'].'</option>';
   
   
   if(isset($label->children) && $intLevel!=2)
   {
-      //pr($label->children);
-      //pr($label['children']);
   $intLevel++;
        $strHtml =$this->getCatgoryEntryChildHtml($label->children,$strHtml,$intLevel,$intSelectParent);
         $intLevel = $intExtraLevel;
@@ -442,11 +431,9 @@ class CsproductController extends Controller
    {   $user=Session::get("CS_ADMIN");
 
        $aryPostData = $request->all();
-       // print_r($user);die;
        if(isset($aryPostData['product_id']) && $aryPostData['product_id']>0)
        {
            $postobj = Csproduct::where('product_id',$aryPostData['product_id'])->first();
-           //print_r($postobj);die;
        }else{
            $postobj = new Csproduct;
            $postobj->product_uniqueid = Str::slug($aryPostData['product_title'], '-');
@@ -473,15 +460,12 @@ class CsproductController extends Controller
            $aryPostData['product_category_id_'] = array_unique($aryPostData['product_category_id_']);
            $postobj->product_category_id = implode(',',$aryPostData['product_category_id_']);
            $resCategoryName = CsProductCategory::whereIn('pr_cat_id',$aryPostData['product_category_id_'])->get(); 
-           //print_r($resCategoryName);die;
            $catName = array();
            foreach($resCategoryName as $values){
            $catName[] = $values->pr_cat_name;
            }
            $postobj->product_category_name  = implode(', ',$catName);
-           /*echo '<pre>';
-           print_r($resCategoryName);die;*/
-           //$postobj->sm_sc_name  = implode(', ',$resCategoryName['sc_name']);
+           
        }else{
            $postobj->product_category_name = '';
            $postobj->product_category_id = '';
@@ -502,7 +486,7 @@ class CsproductController extends Controller
        }else{
            return redirect()->route('all-product')->with('error', 'Server Not Responed');
        }
-   }
+   } 
    
 
 
@@ -516,7 +500,6 @@ class CsproductController extends Controller
  public function productStatus($intCategoryId)
    {
        $rowCategoryData = Csproduct::where('product_id',$intCategoryId)->first();
-      // print_r($rowCategoryData);die;
        if($rowCategoryData->product_status==1){
            $status = 0;
        }else{

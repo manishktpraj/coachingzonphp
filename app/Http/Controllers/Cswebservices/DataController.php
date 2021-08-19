@@ -20,6 +20,8 @@ use App\Http\Model\CsTest;
 use App\Http\Model\CsVideo;
 use App\Http\Model\CsPackageDetail;
 
+use App\Http\Model\CsVcategory;
+use App\Http\Model\CsReview;
 
 
 
@@ -163,8 +165,6 @@ class DataController extends Controller
 
             }
 
-          ///  $coursedata = CsPackage::get();
-        ////    $aryResponse['results']=$coursedata;
             $aryResponse['message']='ok';
 
 
@@ -230,7 +230,8 @@ class DataController extends Controller
             $productdata = CsSlider::where('slider_institute', '=', $aryPostData['institute_id'])->get();
             $aryResponse['sliderurl'] = SITE_UPLOAD_URL.SITE_SLIDER_IMAGE;
             $aryResponse['results_slider']=$productdata;
-            $aryResponse['results_review']=array();
+            $productdata = CsReview::get();
+            $aryResponse['results_review']=$productdata;
             $aryResponse['message']='ok';
   
         }else{
@@ -404,8 +405,236 @@ class DataController extends Controller
         exit;
        }
 
+       function videocat(Request $request) 
+       { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+           $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
+            $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
+          })->select('vc_id','vc_name','vc_image', DB::raw(' (SELECT count(*) FROM cs_video  WHERE FIND_IN_SET(cs_vcategory.vc_id,video_vc_id)) as total'))->where('pkd_type','3')->get();
+
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+       function testcat(Request $request) 
+       { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsPackageDetail::leftJoin('cs_tcategory', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_tcategory.tc_id');
+              })->select('tc_id','tc_name','tc_image', DB::raw(' (SELECT count(*) FROM cs_test  WHERE FIND_IN_SET(cs_tcategory.tc_id,test_tc_id)) as total'))->where('pkd_type','2')->get();
+    
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_TEST_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+
+       function syllabus(Request $request) { 
+
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsPackage::where('package_id', '=', $aryPostData['course_id'])->get();
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+      
+       function dailyquiz(Request $request) { 
+
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsTest::where('test_tc_name', 'like', '%Daily Quiz%')->get();
+
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_TEST_IMAGE;
+            $aryResponse['message']='ok';
+           // $aryResponse['institute']=$institutedata;
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['dailyquiz']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+
+       function livevideos(Request $request) { 
+
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsVideo::where('video_type', '=', 0)->get();
+
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
+            $aryResponse['message']='ok';
+           // $aryResponse['institute']=$institutedata;
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['livevideo']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+
+       function review(Request $request) { 
+
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsReview::where('review_user_id', '=', $aryPostData['student_id'])->first();
+
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['dailyquiz']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+
+    //    public function insreview(Request $request)
+    // {
+    //     $aryResponse =array();
+    //     if ($request->isMethod('post')) 
+    //     {
+    //         $aryResponse['message']='ok';
+    //         $data = (object)$request->all();
+    //       //  print_r($data);die;
+    //         $rowUserInfo = CsInstitute::where('ins_id', '=', $data->institute_id)->first();
+    //         if(isset($rowUserInfo->ins_id) && $rowUserInfo->ins_id>0 && $rowUserInfo->ins_status==1)
+    //         {
+
+    //             CsInstitute::where('ins_id',$data->institute_id)->update(['ins_rating'=>$data->ins_rating,'ins_review'=>$data->ins_review]);
+    //             $aryResponse['message']='ok';
+    //         }else{
+    //             $aryResponse['message']='failed';
+    //             $aryResponse['review']='Method Not Allowed'; 
+                
+    //         }
+        
+    //     }
+    //     echo json_encode($aryResponse);
+    //     exit;       
+    // }
+
+    function insreview(Request $request)
+    {
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        { 
+            $data = (object)$request->all();
+            $rowUserInfo = CsReview::where('review_user_id', '=', $data->user_id)->first();
+            if(isset($rowUserInfo->review_user_id) && $rowUserInfo->review_user_id>0)
+            {             
+
+                $rowUserInfo->review_user_id = $data->user_id;
+                $rowUserInfo->review_user_name = $data->user_name;
+                $rowUserInfo->review_institute_id = $data->institute_id;
+                $rowUserInfo->review_institute_name = $data->institute_name;
+                $rowUserInfo->ins_rating = $data->ins_rating;
+                $rowUserInfo->ins_review = $data->ins_review;
+                $rowUserInfo->save();
+                $aryResponse['message']='ok';
+                $aryResponse['notification']='Thanks for your review';
+
+            }else{
+                $rowUserInfo = new CsReview;
+                $rowUserInfo->review_user_id = $data->user_id;
+                $rowUserInfo->review_user_name = $data->user_name;
+                $rowUserInfo->review_institute_id = $data->institute_id;
+                $rowUserInfo->review_institute_name = $data->institute_name;
+                $rowUserInfo->ins_rating = $data->ins_rating;
+                $rowUserInfo->ins_review = $data->ins_review;
+                $rowUserInfo->save();
+                $aryResponse['message']='ok';
+                $aryResponse['notification']='Thanks for your review';
+                
+            }
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['notification']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+    }
+ 
 
 
 
 
-} 
+
+
+
+
+
+
+
+
+
+
+
+    function videocat1(Request $request) 
+    { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if ($request->isMethod('post')) 
+        {
+            $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
+              })->select('vc_id','vc_name', DB::raw(' (SELECT count(*) FROM cs_video  WHERE FIND_IN_SET(cs_vcategory.vc_id,video_vc_id)) as total'))->where('pkd_type','3')->get();
+ 
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
+            $aryResponse['message']='ok';
+            $aryResponse['results']=$productdata;
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+       function testing(Request $request) 
+       {
+       
+       
+       
+       }
+
+       
+
+}  

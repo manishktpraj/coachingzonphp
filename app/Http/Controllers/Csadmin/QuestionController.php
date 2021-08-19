@@ -21,7 +21,6 @@ class QuestionController extends Controller
   public function addNewQuestion(Request $request)
   {
     $resSubData= CsSubject::get();
-     // print_r($resQuesData);
       
     $title='Add New Question';
     return view('Csadmin.Question.addNewQuestion',compact('title','resSubData'));
@@ -29,7 +28,6 @@ class QuestionController extends Controller
   
   public function questionSubjects(Request $request,$intCategoryId=0)
   {
-      //echo $int;  
      /***********************Reset Filter Session ************/
      if($request->get('reset')==1)
      {
@@ -40,7 +38,6 @@ class QuestionController extends Controller
   
   /***********************Bulk Action ************/
     $aryPostData = $request->all();
-    //print_r($aryPostData);
     if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
        $aryPostData =$_POST;
       $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -169,7 +166,6 @@ class QuestionController extends Controller
        function subjectProccess(Request $request)
         {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['sc_id']) && $aryPostData['sc_id']>0)
         {
             $postobj = CsSubject::where('sc_id',$aryPostData['sc_id'])->first();

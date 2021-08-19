@@ -18,9 +18,6 @@ class TestsController extends Controller
   {
     $user=Session::get("CS_ADMIN");
      
-    //print_r($user);
-
-   echo  $user->staff_name;
      /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -86,7 +83,6 @@ class TestsController extends Controller
             }
         }    
     
-    //print_r($resTestData);
     $resCategoryData = CsTcategory::get();
     $title='Tests';
     return view('Csadmin.Tests.index',compact('title','resTestData','resCategoryData','user'));
@@ -127,7 +123,6 @@ class TestsController extends Controller
    public function testStatus($intCategoryId)
     {
         $rowCategoryData = CsTest::where('test_id',$intCategoryId)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->test_status==1){
             $status = 0;
         }else{
@@ -141,11 +136,9 @@ class TestsController extends Controller
     {   $user=Session::get("CS_ADMIN");
 
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['test_id']) && $aryPostData['test_id']>0)
         {
             $postobj = CsTest::where('test_id',$aryPostData['test_id'])->first();
-            //print_r($postobj);die;
         }else{
             $postobj = new CsTest;
             $postobj->test_slug = Str::slug($aryPostData['test_name'], '-');
@@ -174,15 +167,12 @@ class TestsController extends Controller
             $aryPostData['test_tc_id_'] = array_unique($aryPostData['test_tc_id_']);
             $postobj->test_tc_id = implode(',',$aryPostData['test_tc_id_']);
             $resCategoryName = CsTcategory::whereIn('tc_id',$aryPostData['test_tc_id_'])->get(); 
-            //print_r($resCategoryName);die;
             $catName = array();
             foreach($resCategoryName as $values){
             $catName[] = $values->tc_name;
             }
             $postobj->test_tc_name  = implode(', ',$catName);
-            /*echo '<pre>';
-            print_r($resCategoryName);die;*/
-            //$postobj->sm_sc_name  = implode(', ',$resCategoryName['sc_name']);
+            
         }else{
             $postobj->test_tc_name = '';
             $postobj->test_tc_id = '';
@@ -216,7 +206,6 @@ class TestsController extends Controller
      
      /***********************Bulk Action ************/
        $aryPostData = $request->all();
-       //print_r($aryPostData);
        if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
           $aryPostData =$_POST;
          $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -317,10 +306,9 @@ class TestsController extends Controller
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
-    
+     
     function getCatgoryChildHtml($tree,$strExtraHtml='',$intLevel=0){
             
 
@@ -340,7 +328,7 @@ class TestsController extends Controller
                 for($i=0;$i<$intLevel;$i++){
                     $strExtraData .='<i data-feather="minus"></i>';
                 }
-                $src = ($label['tc_image']!="")?SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE.$label['tc_image']:SITE_NO_IMAGE_PATH;
+                $src = ($label['tc_image']!="")?SITE_UPLOAD_URL.SITE_TEST_IMAGE.$label['tc_image']:SITE_NO_IMAGE_PATH;
                 $strHtml .='<tr>
                                 <td scope="row" style="text-align:center;vertical-align: middle;"><input type="checkbox" id="selectAll" class="clsSelectSingle" name="tc_id[]" value="'.$label['tc_id'].'"></td>';
                 $strHtml .='<td style="text-align:center">
@@ -362,7 +350,7 @@ class TestsController extends Controller
                 
                 $strHtml .='<td style="text-align:center">'.$orderData.'</td>';
                 
-                if($label['tc_id']==10){
+                if($label['tc_id']==10 || $label['tc_id']==13){
                 $strHtml .='<td colspan="1" style="text-align:center"></td>';
                 }else{
                 $strHtml .='<td>
@@ -404,8 +392,7 @@ class TestsController extends Controller
     function testCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        /* echo "<pre>";
-        print_r($aryPostData);die; */
+
         if(isset($aryPostData['tc_id']) && $aryPostData['tc_id']>0)
         {
             $postobj = CsTcategory::where('tc_id',$aryPostData['tc_id'])->first();
@@ -429,7 +416,7 @@ class TestsController extends Controller
         {
             $image = $request->file('tc_image_');
             $name = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = SITE_UPLOAD_PATH.SITE_STUDY_MATERIAL_IMAGE;
+            $destinationPath = SITE_UPLOAD_PATH.SITE_TEST_IMAGE;
             $image->move($destinationPath, $name);
             $postobj->tc_image = $name;
         } 
@@ -470,7 +457,6 @@ public function changeStatusTCategory($intCategoryId)
 
     function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
   {
-     //echo $intSelectParent; die;
      $strHtml=$strExtraHtml;
    $intExtraLevel = $intLevel;
 
@@ -494,7 +480,6 @@ public function changeStatusTCategory($intCategoryId)
              $strselect ='';
              if($label['tc_id']==$intSelectParent)
              {
-                 //echo "hii"; die;
                  $strselect ='selected="selected"';
              }
             $strHtml .='<option '.$strselect.' value="'.$label['tc_id'].'">'.$strExtraData.$label['tc_name'].'</option>';
@@ -502,8 +487,7 @@ public function changeStatusTCategory($intCategoryId)
 
 if(isset($label->children) && $intLevel!=2)
 {
-    //pr($label->children);
-    //pr($label['children']);
+  
 $intLevel++;
      $strHtml =$this->getCatgoryEntryChildHtml($label->children,$strHtml,$intLevel,$intSelectParent);
       $intLevel = $intExtraLevel;
@@ -516,10 +500,26 @@ $intLevel++;
   }
   
 
-
-
-
-
-
+  public function testQuestion($intTestId=0)
+  {
+    $user=Session::get("CS_ADMIN");
+    
+    $resTestData = CsTest::where('test_id','=',$intTestId)->first();
+    
+    $title='Add Questions';
+    return view('Csadmin.Tests.testQuestion' ,compact('title','resTestData'));
+  }
+  
+  public function addtestQuestion($intTestId=0)
+  {
+    $user=Session::get("CS_ADMIN");
+    
+    $resTestData = CsTest::where('test_id','=',$intTestId)->first();
+    
+    $title='Add Questions';
+    return view('Csadmin.Tests.addtestQuestion' ,compact('title','resTestData'));
+  }
+  
+  
 
 }

@@ -48,7 +48,7 @@
 </tr>
 </thead>
 <tbody>
-<?php 
+<?php  
 $i=1;if(count($resTestData)>0){
  //print_r($resTestData);
 foreach($resTestData as $test)
@@ -82,6 +82,8 @@ foreach($resTestData as $test)
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
+<a href="<?php echo e(route('testQuestion',$test->test_id )); ?>" class="btn btn-info btn-icon mg-r-5" title="Questiion" style="padding:0px 5px;"><i class="fas fa-copy" style="font-size:11px;"> +</i></a>
+
 <a href="<?php echo e(route('addnewtest',$test->test_id )); ?>" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
 <a href="<?php echo e(route('testDelete',$test->test_id )); ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>

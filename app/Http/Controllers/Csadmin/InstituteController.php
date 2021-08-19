@@ -66,9 +66,7 @@ class InstituteController extends Controller
   
        if(session()->has('FILTER_INSTITUTE')){
        $strFilterKeyword = Session::get('FILTER_INSTITUTE');
-      // $strFilterKeyword;
        $resVideoData = CsInstitute::where('ins_name', 'LIKE', "%{$strFilterKeyword}%")->paginate(20);
-      //print_r($resVideoData); die;
        }else{
        $resVideoData = CsInstitute::paginate(20);
        }    
@@ -94,7 +92,6 @@ class InstituteController extends Controller
         }
       
       $resStateData = CsStates::where('country_id','=',101)->get();
-      //print_r($resStateData);die;
       $resCategoryData = CsInstituteCategory::get();
       $aryCategoryList = $this->buildTree($resCategoryData,0);
       
@@ -107,7 +104,6 @@ class InstituteController extends Controller
 function insProccess(Request $request)
     {
         $aryPostData = $request->all();
-       // print_r($aryPostData);die;
         if(isset($aryPostData['ins_id']) && $aryPostData['ins_id']>0)
         {
             $postobj = CsInstitute::where('ins_id',$aryPostData['ins_id'])->first();
@@ -132,23 +128,20 @@ function insProccess(Request $request)
         $postobj->ins_state = $aryPostData['ins_state'];
         $postobj->ins_city = $aryPostData['ins_city'];
         $postobj->ins_postcode = $aryPostData['ins_postcode'];
+        $postobj->ins_cz_share = $aryPostData['ins_cz_share'];
 
-//print_r($aryPostData);die;
-        
+      
         if(isset($aryPostData['ins_icat_id_']) && count($aryPostData['ins_icat_id_'])>0)
         {
             $aryPostData['ins_icat_id_'] = array_unique($aryPostData['ins_icat_id_']);
             $postobj->ins_cat_id = implode(',',$aryPostData['ins_icat_id_']);
             $resCategoryName = CsInstituteCategory::whereIn('icat_id',$aryPostData['ins_icat_id_'])->get(); 
-            //print_r($resCategoryName);die;
             $catName = array();
             foreach($resCategoryName as $values){
             $catName[] = $values->icat_name;
             }
             $postobj->ins_cat_name  = implode(', ',$catName);
-            /*echo '<pre>';
-            print_r($resCategoryName);die;*/
-            //$postobj->sm_sc_name  = implode(', ',$resCategoryName['sc_name']);
+            
         }else{
             $postobj->ins_cat_name = '';
             $postobj->ins_cat_id = '';
@@ -207,7 +200,6 @@ function insProccess(Request $request)
     }
     function genrateHtml($aryCategoryTree,$intLevel=0,$strSelectCategory=array()){
         $strHtml='';
-        //print_r($aryCategoryTree);
         foreach($aryCategoryTree as $key=>$label){
             if($label->icat_parent==0){
                 
@@ -215,7 +207,6 @@ function insProccess(Request $request)
             }
             $strChecked='';
             $strExtraChecked ='';
-           // print_r($strSelectCategory);
             if(in_array($label->icat_id,$strSelectCategory)){
                 $strChecked = 'checked="checked"';
                 $strExtraChecked ='checked';
@@ -230,7 +221,6 @@ function insProccess(Request $request)
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
     public function insDelete($ins_id)
@@ -241,7 +231,6 @@ function insProccess(Request $request)
     public function insStatus($ins_id)
     {
         $rowCategoryData = CsInstitute::where('ins_id',$ins_id)->first();
-        //print_r($rowCategoryData);die;
         if($rowCategoryData->ins_status==1){
             $status = 0;
         }else{

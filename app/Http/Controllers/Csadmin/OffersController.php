@@ -113,7 +113,6 @@ class OffersController extends Controller
     {
       $user=Session::get("CS_ADMIN");
       $a=$user->user_id;
-     // print_r($user);die;
         $aryPostData = $request->all();
         if(isset($aryPostData['offers_id'])  &&  $aryPostData['offers_id']>0)
         {
@@ -123,10 +122,7 @@ class OffersController extends Controller
             $data->offer_institute= $a;
 
         }
-       // echo "<pre>";
-        //echo $a;die;
-        //$data = new Csoffers();  
-       
+             
         $data->offers_name = $request['offers_name'];
         $data->coupon_code = $request['coupon_code'];
         $data->offers_valid_from = $request['offers_valid_from'];
@@ -153,7 +149,6 @@ class OffersController extends Controller
      public function offersStatus($offers_id)
     {
         $rowCategoryData = Csoffers::where('offers_id',$offers_id)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->offers_status==1){
             $status = 0;
         }else{

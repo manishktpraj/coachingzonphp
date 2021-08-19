@@ -50,8 +50,29 @@ Route::group(['prefix'=>'user'], function(){
     Route::any('/freetestseries', 'DataController@freetestseries')->name('freetestseries');
     Route::any('/institutes', 'DataController@institutes')->name('institutes');
     Route::any('/packagedetail', 'DataController@packagedetail')->name('packagedetail');
+    Route::any('/videocat', 'DataController@videocat')->name('videocat');
+    Route::any('/testcat', 'DataController@testcat')->name('testcat');
+    Route::any('/dailyquiz', 'DataController@dailyquiz')->name('dailyquiz');
+    Route::any('/livevideos', 'DataController@livevideos')->name('livevideos');
+    Route::any('/insreview', 'DataController@insreview')->name('insreview');
+    Route::any('/syllabus', 'DataController@syllabus')->name('syllabus');
+    Route::any('/review', 'DataController@review')->name('review');
+
+
     
+    
+    Route::any('/videocat1', 'DataController@videocat1')->name('videocat1');
+    Route::any('/testing', 'DataController@testing')->name('testing');
+
        
+});
+Route::group(['prefix'=>'cart'], function(){
+
+    Route::any('/applypromo', 'CartController@applypromo')->name('applypromo');
+    Route::any('/completetransaction', 'CartController@completetransaction')->name('completetransaction');
+    Route::any('/mypurchase', 'CartController@mypurchase')->name('mypurchase');
+    Route::any('/mylibrary', 'CartController@myLibrary')->name('myLibrary');
+
 });
 
 

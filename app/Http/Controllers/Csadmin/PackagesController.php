@@ -82,7 +82,6 @@ class PackagesController extends Controller
       $resPackageData =  $resPackageData->paginate(20);
 
     
-     //print_r($resPackageData);
     $resCategoryData = CsPcategory::get(); 
     $title='Packages';
     return view('Csadmin.Packages.index',compact('title','resPackageData','resCategoryData','user'));
@@ -138,7 +137,6 @@ class PackagesController extends Controller
                 $strHtml .=$this->genrateHtml($label->children,$intLevel,$strSelectCategory);
             }
         }
-        //print_r($strHtml);
         return $strHtml;
     }
     function packageProccess(Request $request)
@@ -147,7 +145,6 @@ class PackagesController extends Controller
         
         
         $aryPostData = $request->all();
-        // print_r($aryPostData);die;
         if(isset($aryPostData['package_id']) && $aryPostData['package_id']>0)
         {
             $postobj = CsPackage::where('package_id',$aryPostData['package_id'])->first();
@@ -176,7 +173,6 @@ class PackagesController extends Controller
             $aryPostData['package_pc_id_'] = array_unique($aryPostData['package_pc_id_']);
             $postobj->package_pc_id = implode(',',$aryPostData['package_pc_id_']);
             $resCategoryName = CsPcategory::whereIn('pc_id',$aryPostData['package_pc_id_'])->get(); 
-            //print_r($resCategoryName);die;
             $catName = array();
             foreach($resCategoryName as $values){
             $catName[] = $values->pc_name;
@@ -220,7 +216,6 @@ class PackagesController extends Controller
   public function packageStatus($intCategoryId)
     {
         $rowCategoryData = CsPackage::where('package_id',$intCategoryId)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->package_status==1){
             $status = 0;
         }else{
@@ -233,7 +228,6 @@ class PackagesController extends Controller
   
 public function categoryPackage(Request $request,$intCategoryId=0)
     {
- //echo $int;  
      /***********************Reset Filter Session ************/
      if($request->get('reset')==1)
      {
@@ -244,7 +238,6 @@ public function categoryPackage(Request $request,$intCategoryId=0)
   
   /***********************Bulk Action ************/
     $aryPostData = $request->all();
-    //print_r($aryPostData);
     if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
        $aryPostData =$_POST;
       $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -528,8 +521,6 @@ public function categoryPackage(Request $request,$intCategoryId=0)
     {
         $userId = Session::get("CS_ADMIN")->user_id;
         $aryPostData = $request->all();
-        /* echo "<pre>";
-        print_r($aryPostData);die(); */
         CsPackageDetail::where('pkd_pack_id',$aryPostData['package_id'])
                     ->where('pkd_type',$aryPostData['pkd_type'])
                     ->where('pkd_ins_id',$userId)

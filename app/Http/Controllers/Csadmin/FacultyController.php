@@ -19,7 +19,7 @@ class FacultyController extends Controller
   public function index(Request $request)
   {
     $user=Session::get("CS_ADMIN");
-
+ 
     /***********************Reset Filter Session ************/
         if($request->get('reset')==1)
         {
@@ -90,7 +90,6 @@ class FacultyController extends Controller
   public function facultyStatus($intCategoryId)
     {
         $rowCategoryData = CsStaff::where('staff_id',$intCategoryId)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->staff_status==1){
             $status = 0;
         }else{
@@ -180,7 +179,6 @@ class FacultyController extends Controller
 
         /***********************Bulk Action ************/
         $aryPostData = $request->all();
-        //print_r($aryPostData);
         if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
             $aryPostData =$_POST;
             $aryIds = explode(',',$aryPostData['bulkvalue']);

@@ -17,13 +17,19 @@
 <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5"><i data-feather="file" class="wd-10 mg-r-5"></i> Generate Report</button>
 </div>
 </div>
+<?php 
+	$total=0;
+foreach($all_trans_data as $trans_total){
 
+
+	$total=$trans_total->trans_amt + $total;
+} ?>
 <div class="row row-xs">
 <div class="col-sm-6 col-lg-3">
 <div class="card card-body">
 <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Total Earnings</h6>
 <div class="d-flex d-lg-block d-xl-flex align-items-end">
-  <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">₹253363.00</h3>
+  <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">₹<?php echo $total; ?></h3>
   <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-success">1.2% <i class="icon ion-md-arrow-up"></i></span></p>
 </div>
 <div class="chart-three">
@@ -35,7 +41,7 @@
 <div class="card card-body">
 <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Packages Purchases</h6>
 <div class="d-flex d-lg-block d-xl-flex align-items-end">
-  <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">3,137</h3>
+  <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1"><?php echo count($all_trans_data);?></h3>
   <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-danger">0.7% <i class="icon ion-md-arrow-down"></i></span></p>
 </div>
 <div class="chart-three">

@@ -30,22 +30,7 @@ class Controller extends BaseController
             if(\Session::get("CS_ADMIN") != null) {
                 $resuserData = \Session::get("CS_ADMIN");
 
-                // if($resuserData->role_type!=0){
-                // $resuserData1 = cs_institute::where('user_id', '=',$user_id)->where('role_type','=', $user->role_type)->get();
-                // }
-              /*  $user_id=$user->staff_id;
-              
-                $resuserData = CsadminView::where('user_id', '=',$user_id)->where('role_type','=', $user->role_type)->get();
-
-                $users = DB::table('csadmin_view')
-                ->where('user_id', '=', $user_id)
-                ->where('role_type', '=',  $user->role_type)
-                ->get();
-
-                print_r( $user);
-                */
-               //print_r($resuserData);die;
-               $user_role=$resuserData->role_type;
+                 $user_role=$resuserData->role_type;
                $session_user_id= $resuserData->user_id;
                if($user_role==0){
                 $session_user_data=CsStaff::first();
@@ -53,17 +38,13 @@ class Controller extends BaseController
                $session_user_data=CsInstitute::where('ins_id', $session_user_id)->first();
                }
 
-               //print_r($resuserData);
                $permissions_data=CsRolePermissions::where('rp_role_id', $resuserData->staff_role)->get();
-                            //  print_r($permissions_data);
-
-//echo $user_role;
+                           
       $permission_data=array();
       $view_data=array();
       $delete_data=array();
       $edit_data=array();
       foreach($permissions_data as $p_data){
-       // $permission_data[]=$p_data->rp_permission_id;
         if($p_data->rp_view_status==1){
         $view_data[]=$p_data->rp_permission_id;
         }
@@ -76,10 +57,7 @@ class Controller extends BaseController
         
      // $permissions_data=$p_data->rp_permission_id;
       }
-    // print_r($permission_data);
-    // print_r($view_data);
-    // print_r($delete_data);
-    // print_r($edit_data);
+    
 
 
 

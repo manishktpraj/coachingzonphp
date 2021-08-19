@@ -158,7 +158,6 @@ class StudyController extends Controller
         $user=Session::get("CS_ADMIN");
 
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['sm_id']) && $aryPostData['sm_id']>0)
         {
             $postobj = CsStudyMaterial::where('sm_id',$aryPostData['sm_id'])->first();
@@ -180,7 +179,6 @@ class StudyController extends Controller
             $aryPostData['sm_sc_id_'] = array_unique($aryPostData['sm_sc_id_']);
             $postobj->sm_sc_id = implode(',',$aryPostData['sm_sc_id_']);
             $resCategoryName = CsScategory::whereIn('sc_id',$aryPostData['sm_sc_id_'])->get(); 
-            //print_r($resCategoryName);die;
             $catName = array();
             foreach($resCategoryName as $values){
             $catName[] = $values->sc_name;
@@ -190,12 +188,6 @@ class StudyController extends Controller
             $postobj->sm_sc_name = '';
             $postobj->sm_sc_id_ = '';
         }
-            
-            
-            //$resCategoryName = CsScategory::select('sc_name')->whereIn('sc_id',$aryPostData['sm_sc_id_'])->get(); 
-            /*echo '<pre>';
-            print_r($resCategoryName);die;*/
-            //$postobj->sm_sc_name  = implode(', ',$resCategoryName['sc_name']);
        
         if($request->hasFile('sm_image_'))
         {
@@ -226,7 +218,6 @@ class StudyController extends Controller
     public function studyMaterialStatus($intCategoryId)
     {
         $rowCategoryData = CsStudyMaterial::where('sm_id',$intCategoryId)->first();
-       // print_r($rowCategoryData);die;
         if($rowCategoryData->sm_status==1){
             $status = 0;
         }else{
@@ -244,7 +235,7 @@ class StudyController extends Controller
     
     public function studyCategory(Request $request,$intCategoryId=0)
     {
-         //echo $int;  
+      
      /***********************Reset Filter Session ************/
      if($request->get('reset')==1)
      {
@@ -255,7 +246,6 @@ class StudyController extends Controller
   
   /***********************Bulk Action ************/
     $aryPostData = $request->all();
-    //print_r($aryPostData);
     if(isset($aryPostData['bulkvalue']) && $aryPostData['bulkvalue']!=''):
        $aryPostData =$_POST;
       $aryIds = explode(',',$aryPostData['bulkvalue']);
@@ -424,7 +414,6 @@ class StudyController extends Controller
     function studyCategoryProccess(Request $request)
     {
         $aryPostData = $request->all();
-        //print_r($aryPostData);die;
         if(isset($aryPostData['sc_id']) && $aryPostData['sc_id']>0)
         {
             $postobj = CsScategory::where('sc_id',$aryPostData['sc_id'])->first();
@@ -485,7 +474,6 @@ class StudyController extends Controller
     
      function getCatgoryEntryChildHtml($tree,$strExtraHtml='',$intLevel=0,$intSelectParent)
   {
-     //echo $intSelectParent; die;
      $strHtml=$strExtraHtml;
    $intExtraLevel = $intLevel;
 
@@ -509,7 +497,6 @@ class StudyController extends Controller
              $strselect ='';
              if($label['sc_id']==$intSelectParent)
              {
-                 //echo "hii"; die;
                  $strselect ='selected="selected"';
              }
             $strHtml .='<option '.$strselect.' value="'.$label['sc_id'].'">'.$strExtraData.$label['sc_name'].'</option>';

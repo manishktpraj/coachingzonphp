@@ -1,7 +1,3 @@
-<?php 
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,12 +86,12 @@ if(in_array('5',$view_data) || in_array('5',$delete_data) || in_array('5',$edit_
 <?php } ?>
 <?php if(in_array('6',$view_data) ||  in_array('6',$edit_data) || in_array('6',$delete_data)|| in_array('7',$delete_data) || in_array('7',$edit_data) || in_array('7',$view_data)){?>
 
-<li class="nav-item with-sub <?php echo (isset($title) && $title == 'Tests' || $title == 'Add New Test' || $title == 'Test Category')?'active show':''; ?>">
+<li class="nav-item with-sub <?php echo (isset($title) && $title == 'Tests' || $title == 'Add New Test' || $title == 'Test Category' || $title == 'Add New Test Question')?'active show':''; ?>">
 <a href="" class="nav-link"><i data-feather="file-text"></i> <span>Tests/Exams</span></a>
 <ul>
 <?php if(in_array('6',$view_data) ||  in_array('6',$edit_data) || in_array('6',$delete_data)){?>   
 
-<li class="<?php echo (isset($title) && $title == 'Tests')?'active':''; ?>"><a href="<?php echo e(route('tests')); ?>">All Tests/Exams</a></li>
+<li class="<?php echo (isset($title) && $title == 'Tests' || $title == 'Add New Test Question')?'active':''; ?>"><a href="<?php echo e(route('tests')); ?>">All Tests/Exams</a></li>
 <li class="<?php echo (isset($title) && $title == 'Add New Test')?'active':''; ?>"><a href="<?php echo e(route('addnewtest')); ?>">Add New Tests</a></li>
 <?php } 
  if(in_array('7',$delete_data) || in_array('7',$edit_data) || in_array('7',$view_data)){?>
@@ -238,7 +234,9 @@ if(in_array('19',$delete_data) || in_array('19',$edit_data) || in_array('19',$vi
 <?php if(in_array('23',$delete_data) || in_array('23',$edit_data) || in_array('23',$view_data)){?>
 <li class="nav-item <?php echo (isset($title) && $title == 'Reports')?'active':''; ?>"><a href="<?php echo e(route('reports')); ?>" class="nav-link"><i data-feather="box"></i> <span>Reports</span></a></li>
 <?php }?>
-
+<?php if(in_array('23',$delete_data) || in_array('52',$edit_data) || in_array('52',$view_data)){?>
+<li class="nav-item <?php echo (isset($title) && $title == 'Commission')?'active':''; ?>"><a href="<?php echo e(route('commission')); ?>" class="nav-link"><i data-feather="box"></i> <span>Commission</span></a></li>
+<?php }?>
 <?php if(in_array('47',$delete_data) || in_array('47',$edit_data) || in_array('47',$view_data) || in_array('51',$delete_data) || in_array('51',$edit_data) || in_array('51',$view_data)){?>
 <li class="nav-item with-sub <?php echo (isset($title) && $title == 'Settings' || $title == 'Account Setting')?'active show':''; ?>">
 <a href="" class="nav-link"><i data-feather="settings"></i> <span>Settings</span></a>

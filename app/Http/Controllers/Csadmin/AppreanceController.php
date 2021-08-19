@@ -22,7 +22,6 @@ class AppreanceController extends Controller
            //     $resSliderData = CsSlider::where('test_institute','=',$user->user_id)->paginate(20);
 
           //  }
-         // print_r($resSliderData);
     $title='Slider';
     return view('Csadmin.Appreance.index',compact('title','resSliderData'));
   }
@@ -47,7 +46,6 @@ class AppreanceController extends Controller
      
      
      $aryPostData = $request->all();
-    // print_r($aryPostData);die;
      if(isset($aryPostData['slider_id']) && $aryPostData['slider_id']>0)
      {
          $postobj = CsSlider::where('slider_id',$aryPostData['slider_id'])->first();
@@ -87,7 +85,6 @@ class AppreanceController extends Controller
  public function sliderStatus($intCategoryId)
  {
      $rowCategoryData = CsSlider::where('slider_id',$intCategoryId)->first();
-    // print_r($rowCategoryData);die;
      if($rowCategoryData->slider_status==1){
          $status = 0;
      }else{

@@ -38,7 +38,9 @@
 <th scope="col" style="text-align:center;width:10px;"><input type="checkbox" id="selectAll"></th>
 <th scope="col" style="text-align:center;width:9%;">Institute ID</th>
 <th scope="col">Institute Details</th>
-<th scope="col" style="text-align:center;">Total Sale</th>
+<th scope="col" style="text-align:center;">Total Order</th>
+<th scope="col" style="text-align:center;">Total Earning</th>
+<th scope="col" style="text-align:center;">CZ Share</th>
 <th scope="col">Status</th>
 <th scope="col">Published Date</th>
 <th scope="col" style="text-align:center">Action</th>
@@ -65,6 +67,10 @@ foreach($resVideoData as $video)
 </div>
 </td>
 <td style="text-align:center;">0</td>
+<td style="text-align:center;">0</td>
+
+<td style="text-align:center;">0</td>
+
 <td>
     <?php if($video->ins_status==1){?>
     <a href="<?php echo e(route('insStatus',$video->ins_id)); ?>"><span class="badge badge-success">Active</span></a>
@@ -77,7 +83,7 @@ foreach($resVideoData as $video)
 <td>
 <div class="d-flex align-self-center justify-content-center">
 <nav class="nav nav-icon-only">
-<a href="<?php echo e(route('add-new-institute',$video->ins_id )); ?>" class="btn btn-info btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-eye" style="font-size:11px;"></i></a>
+<a href="#" class="btn btn-info btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-eye" style="font-size:11px;"></i></a>
 <a href="<?php echo e(route('add-new-institute',$video->ins_id )); ?>" class="btn btn-primary btn-icon mg-r-5" title="Edit" style="padding:0px 5px;"><i class="fas fa-pencil-alt" style="font-size:11px;"></i></a>
 <a href="<?php echo e(route('insDelete',$video->ins_id )); ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-icon mg-r-5" title="Delete" style="padding:0px 5px;"><i class="fas fa-trash-alt" style="font-size:11px;"></i></a>
 </nav>

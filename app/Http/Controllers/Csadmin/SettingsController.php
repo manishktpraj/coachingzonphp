@@ -23,10 +23,8 @@ class SettingsController extends Controller
   {
     $rescountry = CsCountries::get();
     $rowStoreData= CsTheme::first();
-   // print($rowStoreData);die;
     $resstate = CsStates::where('country_id', '101')->get();
     $rescity = CsCities::where('state_id','=',$rowStoreData->theme_state)->get();
-    //print_r($rescity);die;
     $title='Settings';
     return view('Csadmin.Settings.index',compact('title','rescountry','resstate','rescity','rowStoreData'));
   }
@@ -36,7 +34,6 @@ class SettingsController extends Controller
 
     $rescountry = CsCountries::get();
     $rowStoreData= CsTheme::first();
-   // print($rowStoreData);die;
     $resstate = CsStates::where('country_id', '101')->get();
     $rescity = CsCities::where('state_id','=',$rowStoreData->theme_state)->get();
 
@@ -45,7 +42,6 @@ class SettingsController extends Controller
 
 
     $sess_var = Session::get('CS_ADMIN');
-//print_r($sess_var);
 
     $user_role=$sess_var->role_type;
     $account_id=$sess_var->user_id;
@@ -63,10 +59,8 @@ class SettingsController extends Controller
 
   function accountProccess(Request $request){
     $sess_var = Session::get('CS_ADMIN');
-    //print_r($sess_var);die;
     $user_role=$sess_var->role_type;
     $account_id=$sess_var->user_id;
-//echo $user_role;die;
     $aryPostData = $request->all();
             if($user_role==0){
 
@@ -79,9 +73,7 @@ class SettingsController extends Controller
             }else{
             $postobj = new CsStaff;
             $postobj->staff_institute_id = $account_id;
-
             }
-           // echo $account_id; die;
             $postobj->staff_default_status = 1;
             $postobj->staff_role = $user_role;
             
@@ -109,7 +101,6 @@ class SettingsController extends Controller
                 $postobj->staff_favicon = $name;
             }
           }else{
-//print_r($aryPostData);die;
             $postobj = CsInstitute::where('ins_id',$account_id)->first();
 
             $postobj->ins_phone = $aryPostData['staff_mobile'];
@@ -187,7 +178,6 @@ class SettingsController extends Controller
     {
 
       $aryPostData = $request->all();
-//print_r($aryPostData);die;
 
       // if(isset($aryPostData['student_id']) && $aryPostData['student_id']>0)
       // {
