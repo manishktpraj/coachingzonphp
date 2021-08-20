@@ -389,11 +389,27 @@ class DataController extends Controller
         $aryResponse =array();
         if ($request->isMethod('post')) 
         {
-            $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 1)->get();
-            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
+        //    $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 1)->get();
+
+            
+
+            $productdata = CsPackageDetail::leftJoin('cs_staff', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_staff.staff_id');
+              })
+              ->where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 1)->get();
+
+
+            $aryResponse['faculty_url'] = SITE_UPLOAD_URL.SITE_FACULTY_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results_faculty']=$productdata;
-            $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
+           // $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
+         
+         
+           $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
+              })
+              ->where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
+            $aryResponse['video_url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
             $aryResponse['results_demo_video']=$productdata;
 
 
