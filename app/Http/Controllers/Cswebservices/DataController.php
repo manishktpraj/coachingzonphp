@@ -145,6 +145,13 @@ class DataController extends Controller
    
             $resPackageCategory= CsPcategory::where(['pc_id'=>$aryPostData['cat_id']])->first();
             $intParent =0;
+            $intCoachingId=0;
+            if(isset($aryPostData['coaching_id']))
+            {
+                $intCoachingId =   $aryPostData['coaching_id'];
+            }
+
+
             if(isset( $resPackageCategory->pc_parent) && $resPackageCategory->pc_parent!=0)
             {
                 $resPackageCategory= CsPcategory::where(['pc_id'=>$resPackageCategory->pc_parent])->first();
@@ -157,10 +164,25 @@ class DataController extends Controller
             if($resPackageCategory!=null && $intParent>0)
             { 
                 $aryResponse['resultsmain'] = $resPackageCategory;
-                $coursedata = CsPackage::whereRaw(' FIND_IN_SET('.$intParent.',package_pc_id)')->whereRaw(' package_status=1')->get();
+
+                if($intCoachingId>0)
+                {
+                    $coursedata = CsPackage::whereRaw(' FIND_IN_SET('.$intParent.',package_pc_id)')->where('pacakge_ins_id',$intCoachingId)->whereRow(' package_status=1')->get();
+
+                }else{
+                    $coursedata = CsPackage::whereRaw(' FIND_IN_SET('.$intParent.',package_pc_id)')->whereRaw(' package_status=1')->get();
+
+                }
+
                 $aryResponse['results']=$coursedata;
             }else{
+                if($intCoachingId>0)
+                {
+                $coursedata = CsPackage::whereRaw(' package_status=1')->where('pacakge_ins_id',$intCoachingId)->get();
+            }else{
                 $coursedata = CsPackage::whereRaw(' package_status=1')->get();
+           
+            }
                 $aryResponse['results'] = $coursedata;
 
             }
@@ -509,7 +531,15 @@ class DataController extends Controller
         $aryResponse =array();
         if ($request->isMethod('post')) 
         {
-            $productdata = CsVideo::where('video_type', '=', 0)->get();
+            if($aryPostData['video_type']==1)
+            {
+                $aryPostData['video_type'] =0;
+                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->get();
+            }else{
+                $aryPostData['video_type'] =0;
+                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->whereRaw(' video_start_date>\''.date('Y-m-d').'\' ')->get();
+            }
+
 
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
             $aryResponse['message']='ok';
