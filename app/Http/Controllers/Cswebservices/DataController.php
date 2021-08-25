@@ -427,8 +427,8 @@ class DataController extends Controller
            // $productdata = CsPackageDetail::where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
          
          
-           $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
-                $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
+           $productdata = CsPackageDetail::leftJoin('cs_video', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_video.video_id');
               })
               ->where('pkd_pack_id', '=', $aryPostData['course_id'])->where('pkd_type', '=', 5)->get();
             $aryResponse['video_url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
