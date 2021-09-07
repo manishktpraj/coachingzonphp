@@ -57,12 +57,13 @@ Route::group(['prefix'=>'user'], function(){
     Route::any('/insreview', 'DataController@insreview')->name('insreview');
     Route::any('/syllabus', 'DataController@syllabus')->name('syllabus');
     Route::any('/review', 'DataController@review')->name('review');
-
+    Route::any('/videosubcategory', 'DataController@videosubcategory')->name('videosubcategory');
+    Route::any('/purchasedtest', 'DataController@purchasedtest')->name('purchasedtest');
+    Route::any('/packagedtest', 'DataController@packagedtest')->name('packagedtest');
 
     
-    
-    Route::any('/videocat1', 'DataController@videocat1')->name('videocat1');
-    Route::any('/testing', 'DataController@testing')->name('testing');
+    Route::any('/review', 'DataController@review')->name('review');
+    //Route::any('/videocat1', 'DataController@videocat1')->name('videocat1');
 
        
 });

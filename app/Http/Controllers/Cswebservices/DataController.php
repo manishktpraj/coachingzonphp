@@ -19,6 +19,8 @@ use App\Http\Model\CsStudyMaterial;
 use App\Http\Model\CsTest;
 use App\Http\Model\CsVideo;
 use App\Http\Model\CsPackageDetail;
+use App\Http\Model\CsTransactions;
+use App\Http\Model\CsTransactionsDetail;
 
 use App\Http\Model\CsVcategory;
 use App\Http\Model\CsReview;
@@ -252,7 +254,7 @@ class DataController extends Controller
             $productdata = CsSlider::where('slider_institute', '=', $aryPostData['institute_id'])->get();
             $aryResponse['sliderurl'] = SITE_UPLOAD_URL.SITE_SLIDER_IMAGE;
             $aryResponse['results_slider']=$productdata;
-            $productdata = CsReview::get();
+            $productdata = CsReview::where('review_user_id',$aryPostData['student_id'])->where('review_institute_id',$aryPostData['institute_id'])->get(); 
             $aryResponse['results_review']=$productdata;
             $aryResponse['message']='ok';
   
@@ -292,13 +294,15 @@ class DataController extends Controller
         if ($request->isMethod('post')) 
         {
         
-              $count =   DB::table('cs_scategory')
+            $count = DB::table('cs_scategory')
               ->join('cs_study_material', 'cs_scategory.sc_id', '=', 'cs_study_material.sm_sc_id')
               ->select('cs_scategory.sc_id as id', DB::raw("count(cs_study_material.sm_sc_id) as count"))
               ->groupBy('cs_scategory.sc_id')
               ->get();
               
             $productdata = CsScategory::get();
+            $resTransData = CsTransactionsDetail::where([['td_user_id','=',$aryPostData['student_id']],['td_product_id','=',$aryPostData['course_id']]])->first();
+            $aryResponse['package_status'] = isset($resTransData->td_id)?1:0; 
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_STUDY_MATERIAL_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
@@ -446,16 +450,19 @@ class DataController extends Controller
        function videocat(Request $request) 
        { 
         $aryPostData = $request->all();
-        $aryResponse =array();
+         //print_r($aryPostData);die;
+        $aryResponse = array();
         if ($request->isMethod('post')) 
         {
-           $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
-            $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
-          })->select('vc_id','vc_name','vc_image', DB::raw(' (SELECT count(*) FROM cs_video  WHERE FIND_IN_SET(cs_vcategory.vc_id,video_vc_id)) as total'))->where('pkd_type','3')->get();
+            $productdata = CsPackageDetail::leftJoin('cs_vcategory', function($join) {
+                $join->on('cs_package_detail.pkd_ref', '=', 'cs_vcategory.vc_id');
+                })->select('vc_id','vc_name','vc_image', DB::raw(' (SELECT count(*) FROM cs_video  WHERE FIND_IN_SET(cs_vcategory.vc_id,video_vc_id)) as total'))->where('pkd_type','3')->get();
 
+            $resTransData = CsTransactionsDetail::where([['td_user_id','=',$aryPostData['student_id']],['td_product_id','=',$aryPostData['course_id']]])->first();
+            $aryResponse['package_status'] = isset($resTransData->td_id)?1:0; 
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
-            $aryResponse['message']='ok';
-            $aryResponse['results']=$productdata;
+            $aryResponse['message'] = 'ok';
+            $aryResponse['results'] = $productdata;
         }else{
             $aryResponse['message']='failed';
             $aryResponse['course']='Method Not Allowed';
@@ -473,7 +480,10 @@ class DataController extends Controller
             $productdata = CsPackageDetail::leftJoin('cs_tcategory', function($join) {
                 $join->on('cs_package_detail.pkd_ref', '=', 'cs_tcategory.tc_id');
               })->select('tc_id','tc_name','tc_image', DB::raw(' (SELECT count(*) FROM cs_test  WHERE FIND_IN_SET(cs_tcategory.tc_id,test_tc_id)) as total'))->where('pkd_type','2')->get();
-    
+            
+            $resTransData = CsTransactionsDetail::where([['td_user_id','=',$aryPostData['student_id']],['td_product_id','=',$aryPostData['course_id']]])->first();
+            $aryResponse['package_status'] = isset($resTransData->td_id)?1:0; 
+              
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_TEST_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
@@ -493,6 +503,8 @@ class DataController extends Controller
         if ($request->isMethod('post')) 
         {
             $productdata = CsPackage::where('package_id', '=', $aryPostData['course_id'])->get();
+            $resTransData = CsTransactionsDetail::where([['td_user_id','=',$aryPostData['student_id']],['td_product_id','=',$aryPostData['course_id']]])->first();
+            $aryResponse['package_status'] = isset($resTransData->td_id)?1:0; 
             $aryResponse['url'] = SITE_UPLOAD_URL.SITE_PACKAGE_IMAGE;
             $aryResponse['message']='ok';
             $aryResponse['results']=$productdata;
@@ -534,10 +546,10 @@ class DataController extends Controller
             if($aryPostData['video_type']==1)
             {
                 $aryPostData['video_type'] =0;
-                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->get();
+                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->where('video_institute', '=', $aryPostData['institute_id'])->get();
             }else{
                 $aryPostData['video_type'] =0;
-                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->whereRaw(' video_start_date>\''.date('Y-m-d').'\' ')->get();
+                $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->where('video_institute', '=', $aryPostData['institute_id'])->whereRaw(' video_start_date>\''.date('Y-m-d').'\' ')->get();
             }
 
 
@@ -571,32 +583,6 @@ class DataController extends Controller
         echo json_encode($aryResponse);
         exit;
        }
-
-
-    //    public function insreview(Request $request)
-    // {
-    //     $aryResponse =array();
-    //     if ($request->isMethod('post')) 
-    //     {
-    //         $aryResponse['message']='ok';
-    //         $data = (object)$request->all();
-    //       //  print_r($data);die;
-    //         $rowUserInfo = CsInstitute::where('ins_id', '=', $data->institute_id)->first();
-    //         if(isset($rowUserInfo->ins_id) && $rowUserInfo->ins_id>0 && $rowUserInfo->ins_status==1)
-    //         {
-
-    //             CsInstitute::where('ins_id',$data->institute_id)->update(['ins_rating'=>$data->ins_rating,'ins_review'=>$data->ins_review]);
-    //             $aryResponse['message']='ok';
-    //         }else{
-    //             $aryResponse['message']='failed';
-    //             $aryResponse['review']='Method Not Allowed'; 
-                
-    //         }
-        
-    //     }
-    //     echo json_encode($aryResponse);
-    //     exit;       
-    // }
 
     function insreview(Request $request)
     {
@@ -639,21 +625,6 @@ class DataController extends Controller
         exit;
     }
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     function videocat1(Request $request) 
     { 
         $aryPostData = $request->all();
@@ -681,6 +652,118 @@ class DataController extends Controller
        
        }
 
-       
+    /*********************** Harsh Lakhera ********************/ 
+    
+    function videosubcategory(Request $request) 
+    { 
+        $aryPostData = $request->all();
+        $aryResponse =array();
+        if($request->isMethod('post')) 
+        {
+            $productdata = CsVcategory::leftJoin('cs_video', function($join) {
+                $join->on('cs_vcategory.vc_id', '=', 'cs_video.video_vc_id');
+                })             
+                ->select('vc_id','vc_name','vc_image', DB::raw(' (SELECT count(*) FROM cs_video ) as total'))
+                ->where('vc_parent',$aryPostData['category_id'])->get();
+
+            $aryResponse['url'] = SITE_UPLOAD_URL.SITE_VIDEO_IMAGE;
+            $aryResponse['message'] = 'ok';
+            $aryResponse['results'] = $productdata;
+        
+        }else{
+            $aryResponse['message']='failed';
+            $aryResponse['course']='Method Not Allowed';
+        }
+        echo json_encode($aryResponse);
+        exit;
+       }
+
+           /*********************** Harsh Lakhera ********************/ 
+
+
+               /*********************** Shikha Shukla ********************/ 
+               
+               function purchasedtest(Request $request) 
+               { 
+                   $aryPostData = $request->all();
+                   $aryResponse =array();
+                   if($request->isMethod('post')) 
+                   {
+                     //  $productdata = CsTransactionsDetail::where('td_user_id', '=', $aryPostData['student_id'])->get();
+                       $productdata = CsTransactionsDetail::leftJoin('cs_package_detail', function($join) {
+                        $join->on('cs_transaction_detail.td_product_id', '=', 'cs_package_detail.pkd_pack_id');
+
+                        })->where('pkd_type','2')->where('td_user_id', '=', $aryPostData['student_id'])->get();
+           
+                       $aryResponse['url'] = SITE_UPLOAD_URL.SITE_TEST_IMAGE;
+                       $aryResponse['message'] = 'ok';
+                       $aryResponse['results'] = $productdata;
+                   
+                   }else{
+                       $aryResponse['message']='failed';
+                       $aryResponse['course']='Method Not Allowed';
+                   }
+                   echo json_encode($aryResponse);
+                   exit;
+                  }
+           
+                   
+                  function packagedtest(Request $request) 
+                  { 
+                      $aryPostData = $request->all();
+                      $aryResponse =array();
+                      if($request->isMethod('post')) 
+                      {
+
+
+                        if($aryPostData['test_type']==1)
+                        {
+                            $aryPostData['test_type'] =0;
+
+                            
+                            $productdata = CsTransactionsDetail::leftJoin('cs_package_detail', function($join) {
+                                $join->on('cs_transaction_detail.td_product_id', '=', 'cs_package_detail.pkd_pack_id');
+
+                                })
+                                ->leftJoin('cs_tcategory', function($join) {
+                                    $join->on('cs_package_detail.pkd_ref', '=', 'cs_tcategory.tc_id');
+                                    })
+                                
+                                ->select('tc_id','tc_name','tc_image', DB::raw(' (SELECT count(*) FROM cs_test  WHERE FIND_IN_SET(cs_tcategory.tc_id,test_tc_id)) as total'))->where('pkd_type','2')->where('pkd_pack_id', '=', $aryPostData['package_id'])->where('td_user_id', '=', $aryPostData['student_id'])->get();
+                
+                        // }
+
+
+
+
+
+                        //     $productdata = CsVideo::where('video_type', '=', $aryPostData['video_type'])->where('video_institute', '=', $aryPostData['institute_id'])->get();
+                        }else{
+                            $aryPostData['test_type'] =0;
+                            $productdata = CsPackageDetail::leftJoin('cs_tcategory', function($join) {
+                                $join->on('cs_package_detail.pkd_ref', '=', 'cs_tcategory.tc_id');
+                                })->select('tc_id','tc_name','tc_image', DB::raw(' (SELECT count(*) FROM cs_test  WHERE FIND_IN_SET(cs_tcategory.tc_id,test_tc_id)) as total'))->where('pkd_type','2')->where('pkd_pack_id', '=', $aryPostData['package_id'])->get();
+                
+                        }
+
+                        
+
+                        //  $productdata = CsTransactionsDetail::where('td_user_id', '=', $aryPostData['student_id'])->get();
+                        
+              
+                          $aryResponse['url'] = SITE_UPLOAD_URL.SITE_TEST_IMAGE;
+                          $aryResponse['message'] = 'ok';
+                          $aryResponse['results'] = $productdata;
+                      
+                      }else{
+                          $aryResponse['message']='failed';
+                          $aryResponse['course']='Method Not Allowed';
+                      }
+                      echo json_encode($aryResponse);
+                      exit;
+                     }
+
+                /*********************** Shikha Shukla ********************/ 
+
 
 }  

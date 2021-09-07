@@ -115,26 +115,23 @@ class CartController extends Controller
         {
         foreach($catrarray as $key=>$label)
         {
-        $data = $aryPostData;
-              $Plans=new CsTransactionsDetail;
-
-                 $Plans['td_name'] =$label['cart_title'];
-                $Plans['td_product_id'] =$label['cart_id'];
-                $Plans['td_image'] =$label['cart_image'];
-                $Plans['td_net_price'] =$label['cart_net_price'];
-                $Plans['td_selling_price'] =$label['cart_net_price'];
-                $Plans['td_discount'] =$data['grand_total'];
-                $Plans['td_qty'] =1;
-                $Plans['td_total_amt'] =$label['cart_net_price'];
-                $Plans['td_trans_id'] =$intTtransactionId;
-                $Plans['td_type'] =$label['cart_type'];
+            $data = $aryPostData;
+            $Plans=new CsTransactionsDetail;
+            $Plans['td_name'] =$label['cart_title'];
+            $Plans['td_product_id'] =$label['cart_id'];
+            $Plans['td_image'] =$label['cart_image'];
+            $Plans['td_net_price'] =$label['cart_net_price'];
+            $Plans['td_selling_price'] =$label['cart_net_price'];
+            $Plans['td_discount'] =$data['grand_total'];
+            $Plans['td_qty'] =1;
+            $Plans['td_total_amt'] =$label['cart_net_price'];
+            $Plans['td_trans_id'] =$intTtransactionId;
+            $Plans['td_type'] =$label['cart_type'];
+            $Plans['td_user_id'] = $data['student_id'];
                 ///    $aryChildTransaction['td_activation'] =$data['grand_total'];
               ////  $aryChildTransaction['td_expiry'] =$data['grand_total'];
-              $Plans->save();
-
-
+            $Plans->save();
         }
-
     } 
         $aryResponse['message']='ok';
         $aryResponse['notification']='Transaction Successfull';

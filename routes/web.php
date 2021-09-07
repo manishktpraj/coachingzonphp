@@ -130,7 +130,7 @@ Route::group(['prefix'=>'csadmin', 'namespace'=>'Csadmin'], function(){
 
 
 
-
+        
         
       /******Faculty Section*******/
         Route::any('/faculty', 'FacultyController@index')->name('faculty');
